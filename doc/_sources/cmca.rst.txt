@@ -1,0 +1,30 @@
+cmca package
+============
+
+Submodules
+----------
+
+cmca.cca module
+---------------
+
+.. automodule:: cmca.cca
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cmca.cmca module
+----------------
+
+.. automodule:: cmca.cmca
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cmca
+   :members:
+   :undoc-members:
+   :show-inheritance:

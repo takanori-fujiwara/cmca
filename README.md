@@ -23,9 +23,10 @@ Setup
 Usage
 -----
 * Import installed modules from python (e.g., `from cmca import CMCA`). See sample.py for examples.
+* For detailed documentations, please see doc/index.html or directly see comments in cmca/cmca.py.
 
 ******
 
 ## How to Cite
 Please, cite:    
-* cMCA is from: Fujiwara and Liu, "Contrastive Multiple Correspondence Analysis (cMCA): Applying the Contrastive Learning Method to Identify Political Subgroups", arXiv:2007.04540, 2020. 
+* cMCA is from: Fujiwara and Liu, "Contrastive Multiple Correspondence Analysis (cMCA): Applying the Contrastive Learning Method to Identify Political Subgroups", arXiv:2007.04540, 2020.

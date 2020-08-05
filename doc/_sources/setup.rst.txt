@@ -1,7 +1,7 @@
-cmca module
-===========
+setup module
+============
 
-.. automodule:: cmca
+.. automodule:: setup
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,7 +1,7 @@
-cmca module
-===========
+sample module
+=============
 
-.. automodule:: cmca
+.. automodule:: sample
    :members:
    :undoc-members:
    :show-inheritance:

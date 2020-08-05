@@ -20,6 +20,22 @@ cmca.cmca module
    :undoc-members:
    :show-inheritance:
 
+cmca.sample module
+------------------
+
+.. automodule:: cmca.sample
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cmca.setup module
+-----------------
+
+.. automodule:: cmca.setup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------

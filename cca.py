@@ -17,6 +17,9 @@ class CCA():
         self.categories = None
         self.components = None
         self.loadings = None
+        self.alpha = None
+        self.B_fg = None
+        self.B_tg = None
         self.B = None
         self.w_ = None
         self.v_ = None
@@ -43,6 +46,7 @@ class CCA():
         if (bg < 0).any().any():
             raise ValueError("All values in bg should be positive")
 
+        self.alpha = alpha
         fg_r_names, fg_c_names = self._row_col_names(fg)
         bg_r_names, bg_c_names = self._row_col_names(bg)
 
@@ -78,15 +82,15 @@ class CCA():
         fg -= np.outer(fg_r_masses, fg_c_masses)
         bg -= np.outer(bg_r_masses, bg_c_masses)
 
-        B_fg = sparse.diags(
+        self.B_fg = sparse.diags(
             fg_c_masses**-0.5) @ fg.transpose() @ fg @ sparse.diags(fg_c_masses
                                                                     **-0.5)
-        B_bg = sparse.diags(
+        self.B_bg = sparse.diags(
             bg_c_masses**-0.5) @ bg.transpose() @ bg @ sparse.diags(bg_c_masses
                                                                     **-0.5)
 
         # Burt matrix for constrastive analyss
-        self.B = B_fg - alpha * B_bg
+        self.B = self.B_fg - alpha * self.B_bg
 
         # Perform EVD
         self.w_, self.v_ = np.linalg.eig(self.B)

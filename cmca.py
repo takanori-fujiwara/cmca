@@ -33,6 +33,9 @@ class CMCA(cca.CCA):
         encoder.
     loadings: ndarray, shape(n_categories, n_components)
         Contrastive principal component loadings obtained after fit() with cMCA.
+    alpha: float
+        The most recently used alpha. This will be manually selected alpha or
+        the best alpha selected automatically.
     Examples
     --------
     >>> import pandas as pd
@@ -45,7 +48,8 @@ class CMCA(cca.CCA):
     >>> # https://archive.ics.uci.edu/ml/datasets/Congressional+Voting+Records
     >>> df = pd.read_csv('./data/house-votes-84.data', header=None)
     >>> with open('./data/house-votes-84.col_names', 'r') as f:
-    ...     df.columns = [line.replace('\n', '') for line in f]
+    ...     # chr(10) is newline (to avoid newline when generating doc with sphinx)
+    ...     df.columns = [line.replace(chr(10), '') for line in f]
     >>> X = df.iloc[:, 1:]
     >>> y = np.array(df.iloc[:, 0])
 
@@ -136,7 +140,30 @@ class CMCA(cca.CCA):
 
             return oh
 
-    def fit(self, fg, bg, alpha, y=None):
+    def _trace_ratio(self, fg, bg, eta):
+        tr_fg = (
+            self.components.transpose() @ self.B_fg @ self.components).trace()
+
+        # this is the way to add eta in cNRL by Fujiwara et al., 2020.
+        # https://arxiv.org/abs/2005.12419
+        # tr_bg = (self.components.transpose() @ self.B_bg @ self.components +
+        #          np.identity(self.components.shape[1]) * eta).trace()
+
+        # here is the new way to add eta to make sure eta is the ratio of tr_fg
+        tr_bg = (self.components.transpose() @ self.B_bg
+                 @ self.components).trace() + tr_fg * eta
+
+        return tr_fg / tr_bg
+
+    def fit(self,
+            fg,
+            bg,
+            auto_alpha_selection=True,
+            alpha=None,
+            eta=1e-3,
+            convergence_ratio=1e-2,
+            max_iter=10,
+            y=None):
         """Fit the model with target and background datasets.
 
         Parameters
@@ -146,11 +173,28 @@ class CMCA(cca.CCA):
         bg: pandas dataframe, shape (n_samples, n_questions)
             A background categorical dataset. The columns of bg must be the same
             with fg. (A row size can be different from fg.)
+        auto_alpha_selection:
+            If True, find auto_alpha_selection for fit. Otherwise, compute PCs
+            based on input alpha.
         alpha: float
             A contrast parameter, which quantifies the trade-off between having
             high target variance and low background variance. alpha must be
             equal to or larger than 0. If 0, the result will be the same with
-            the ordinary PCA.
+            the ordinary PCA. If auto_alpha_selection is True, this alpha is
+            used as an initial alpha value for auto selection.
+        eta: float, optional, (default=1e-3)
+            Small constant value that will add to covariance matrix of bg when
+            applying automatic alpha selection. eta relates to the maximum
+            alpha that will be considered as the best alpha. For example,
+            eta=1e-3 allows that alpha reaches till 1e+3.
+        convergence_ratio: float, optional, (default=1e-2)
+            Threshold of improvement ratio for convergence of automatic alpha
+            selection.
+        max_iter=10: int, optional, (default=10)
+            The number of alpha updates at most.
+        keep_reports: bool, optional, (default=False)
+            If True, while automatic alpha selection, reports are recorded. The
+            reports are the history of "alpha" values.
         y: dummy paramter
         Returns
         -------
@@ -183,7 +227,20 @@ class CMCA(cca.CCA):
         G_bg = CMCA.OneHotEncoder(self.cate_each_q_).fit(bg).transform(bg)
 
         # Apply CA to the disjunctive matrices
+        if alpha is None:
+            alpha = 0
         super().fit(G_fg, G_bg, alpha=alpha, y=y)
+
+        if auto_alpha_selection:
+            new_alpha = self._trace_ratio(fg, bg, eta)
+            # TODO: this can be faster by saving B_fg and B_tg and only update
+            # alpha value when rerunning fit()
+            while max_iter > 0 and new_alpha > alpha and (
+                    new_alpha - alpha) / (alpha + 1e-15) > convergence_ratio:
+                alpha = new_alpha
+                super().fit(G_fg, G_bg, alpha=alpha, y=y)
+                new_alpha = self._trace_ratio(fg, bg, eta)
+                max_iter -= 1
 
         # Compute the total inertia
         n_new_columns = G_fg.shape[1]

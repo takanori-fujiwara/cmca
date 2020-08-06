@@ -1,68 +1,222 @@
 
-<!DOCTYPE html>
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cmca module &#8212; cmca  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cmca module &mdash; cmca  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="sample module" href="sample.html" />
-    <link rel="prev" title="cca module" href="cca.html" />
+    <link rel="prev" title="Welcome to cmca’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> cmca
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">cmca module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cmca</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>cmca module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cmca.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="module-cmca">
 <span id="cmca-module"></span><h1>cmca module<a class="headerlink" href="#module-cmca" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="cmca.CMCA">
 <em class="property">class </em><code class="sig-prename descclassname">cmca.</code><code class="sig-name descname">CMCA</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="cca.html#cca.CCA" title="cca.CCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">cca.CCA</span></code></a></p>
-<blockquote>
-<div><p>Contrastive Multiple Correspondence Analysis (cMCA) from Fujiwara and Liu,
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cca.CCA</span></code></p>
+<p>Contrastive Multiple Correspondence Analysis (cMCA) from Fujiwara and Liu,
 2020 (<a class="reference external" href="https://arxiv.org/abs/2007.04540">https://arxiv.org/abs/2007.04540</a>).
 We referred to MCA in Prince library (<a class="reference external" href="https://github.com/MaxHalford/prince">https://github.com/MaxHalford/prince</a>)
 for this implementation. We modified the part related to perform
 contrastive analysis.</p>
-<dl class="simple">
-<dt>n_components: int, optional, (default=2)</dt><dd><p>A number of componentes to take.</p>
-</dd>
-<dt>copy: bool, optional, (default=True)</dt><dd><p>If False, data passed to fit are overwritten.</p>
-</dd>
-<dt>check_input: bool, optional, (default=True)</dt><dd><p>If True, validate input datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_components</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=2</em><em>)</em>) – A number of componentes to take.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=True</em><em>)</em>) – If False, data passed to fit are overwritten.</p></li>
+<li><p><strong>check_input</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=True</em><em>)</em>) – If True, validate input datasets</p></li>
+</ul>
 </dd>
 </dl>
-<dl class="simple">
-<dt>components: ndarray, shape(n_samples, n_components)</dt><dd><p>Components (i.e., projection matrix W_T in the paper) obtained after
+<dl class="py attribute">
+<dt id="cmca.CMCA.components">
+<code class="sig-name descname">components</code><a class="headerlink" href="#cmca.CMCA.components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Components (i.e., projection matrix W_T in the paper) obtained after
 fit() with cMCA.</p>
-</dd>
-<dt>categories: list, length n_categories</dt><dd><p>All category names across questions produced by applying one-hot
-encoder.</p>
-</dd>
-<dt>loadings: ndarray, shape(n_categories, n_components)</dt><dd><p>Contrastive principal component loadings obtained after fit() with cMCA.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>ndarray, shape(n_samples, n_components)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="cmca.CMCA.categories">
+<code class="sig-name descname">categories</code><a class="headerlink" href="#cmca.CMCA.categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>All category names across questions produced by applying one-hot
+encoder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list, length n_categories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="cmca.CMCA.loadings">
+<code class="sig-name descname">loadings</code><a class="headerlink" href="#cmca.CMCA.loadings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contrastive principal component loadings obtained after fit() with cMCA.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>ndarray, shape(n_categories, n_components)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="cmca.CMCA.alpha">
+<code class="sig-name descname">alpha</code><a class="headerlink" href="#cmca.CMCA.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>The most recently used alpha. This will be manually selected alpha or
+the best alpha selected automatically.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -75,12 +229,9 @@ encoder.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># https://archive.ics.uci.edu/ml/datasets/Congressional+Voting+Records</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/house-votes-84.data&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./data/house-votes-84.col_names&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span>
-</pre></div>
-</div>
-</div></blockquote>
-<dl>
-<dt>‘, ‘’) for line in f]</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+<span class="gp">... </span>    <span class="c1"># chr(10) is newline (to avoid newline when generating doc with sphinx)</span>
+<span class="gp">... </span>    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -151,8 +302,6 @@ encoder.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Categories&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 <dl class="py class">
 <dt id="cmca.CMCA.OneHotEncoder">
 <em class="property">class </em><code class="sig-name descname">OneHotEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">categories</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder" title="Permalink to this definition">¶</a></dt>
@@ -165,26 +314,36 @@ categorical values, we cannot use categories=’auto’.</p>
 <dt id="cmca.CMCA.OneHotEncoder.fit">
 <code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit OneHotEncoder to X.</p>
-<dl class="simple">
-<dt>X<span class="classifier">array-like, shape [n_samples, n_features]</span></dt><dd><p>The data to determine the categories of each feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
+</ul>
 </dd>
-<dt>y<span class="classifier">None</span></dt><dd><p>Ignored. This parameter exists only for compatibility with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>self</p>
 </dd>
 </dl>
-<p>self</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="cmca.CMCA.OneHotEncoder.transform">
 <code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform X using one-hot encoding.</p>
-<dl class="simple">
-<dt>X<span class="classifier">array-like, shape [n_samples, n_features]</span></dt><dd><p>The data to encode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>X_out<span class="classifier">sparse matrix if sparse=True else a 2-d array</span></dt><dd><p>Transformed input.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>sparse matrix if sparse=True else a 2-d array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -193,24 +352,40 @@ categorical values, we cannot use categories=’auto’.</p>
 
 <dl class="py method">
 <dt id="cmca.CMCA.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fg</span></em>, <em class="sig-param"><span class="n">bg</span></em>, <em class="sig-param"><span class="n">alpha</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fg</span></em>, <em class="sig-param"><span class="n">bg</span></em>, <em class="sig-param"><span class="n">auto_alpha_selection</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eta</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">convergence_ratio</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model with target and background datasets.</p>
-<dl class="simple">
-<dt>fg: pandas dataframe, shape (n_samples, n_questions)</dt><dd><p>A target (or foreground) categorical dataset.</p>
-</dd>
-<dt>bg: pandas dataframe, shape (n_samples, n_questions)</dt><dd><p>A background categorical dataset. The columns of bg must be the same
-with fg. (A row size can be different from fg.)</p>
-</dd>
-<dt>alpha: float</dt><dd><p>A contrast parameter, which quantifies the trade-off between having
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fg</strong> (<em>pandas dataframe</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_questions</em><em>)</em>) – A target (or foreground) categorical dataset.</p></li>
+<li><p><strong>bg</strong> (<em>pandas dataframe</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_questions</em><em>)</em>) – A background categorical dataset. The columns of bg must be the same
+with fg. (A row size can be different from fg.)</p></li>
+<li><p><strong>auto_alpha_selection</strong> – If True, find auto_alpha_selection for fit. Otherwise, compute PCs
+based on input alpha.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – A contrast parameter, which quantifies the trade-off between having
 high target variance and low background variance. alpha must be
 equal to or larger than 0. If 0, the result will be the same with
-the ordinary PCA.</p>
+the ordinary PCA. If auto_alpha_selection is True, this alpha is
+used as an initial alpha value for auto selection.</p></li>
+<li><p><strong>eta</strong> (<em>float</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=1e-3</em><em>)</em>) – Small constant value that will add to covariance matrix of bg when
+applying automatic alpha selection. eta relates to the maximum
+alpha that will be considered as the best alpha. For example,
+eta=1e-3 allows that alpha reaches till 1e+3.</p></li>
+<li><p><strong>convergence_ratio</strong> (<em>float</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=1e-2</em><em>)</em>) – Threshold of improvement ratio for convergence of automatic alpha
+selection.</p></li>
+<li><p><strong>max_iter=10</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=10</em><em>)</em>) – The number of alpha updates at most.</p></li>
+<li><p><strong>keep_reports</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=False</em><em>)</em>) – If True, while automatic alpha selection, reports are recorded. The
+reports are the history of “alpha” values.</p></li>
+<li><p><strong>y</strong> (<em>dummy paramter</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>self.</p>
 </dd>
 </dl>
-<p>y: dummy paramter
-Returns
-——-
-self.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -218,17 +393,21 @@ self.</p>
 <code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'row'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute row coordinates (or cloud of individuals) or column
 coordinates (or cloud of categories) with learned components by fit.</p>
-<dl class="simple">
-<dt>X: pandas dataframe, shape (n_samples, n_questions)</dt><dd><p>A categorical dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>pandas dataframe</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_questions</em><em>)</em>) – A categorical dataset.</p></li>
+<li><p><strong>axis</strong> (<em>'row'</em><em> or </em><em>'col'</em><em>, </em><em>optional</em><em>, </em><em>default='row'</em>) – If ‘row’, compute row coordniates. Otherwise, compute column
+coordinates.</p></li>
+</ul>
 </dd>
-<dt>axis: ‘row’ or ‘col’, optional, default=’row’</dt><dd><p>If ‘row’, compute row coordniates. Otherwise, compute column
-coordinates.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>coordinates: ndarray, shape(n_samples or n_categories, n_components)</dt><dd><p>If axis is ‘row’, row coordinates of X, shape(n_samples, n_components).
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>coordinates</strong> – If axis is ‘row’, row coordinates of X, shape(n_samples, n_components).
 Otherwise, column coordinates of X, shape(n_categories, n_components).</p>
 </dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, shape(n_samples or n_categories, n_components)</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -237,75 +416,57 @@ Otherwise, column coordinates of X, shape(n_categories, n_components).</p>
 </div>
 
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">cmca</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="cca.html">cca module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">cmca module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sample.html">sample module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">setup module</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="cca.html" title="previous chapter">cca module</a></li>
-      <li>Next: <a href="sample.html" title="next chapter">sample module</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to cmca’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Author
 
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Author.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/cmca.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>

@@ -8,7 +8,8 @@ from cmca import CMCA
 # https://archive.ics.uci.edu/ml/datasets/Congressional+Voting+Records
 df = pd.read_csv('./data/house-votes-84.data', header=None)
 with open('./data/house-votes-84.col_names', 'r') as f:
-    df.columns = [line.replace('\n', '') for line in f]
+    # chr(10) is newline (to avoid newline when generating doc with sphinx)
+    df.columns = [line.replace(chr(10), '') for line in f]
 X = df.iloc[:, 1:]
 y = np.array(df.iloc[:, 0])
 
@@ -18,9 +19,13 @@ bg = X.iloc[y == 'republican']
 # alpha = 0 (normal MCA on fg)
 # alpha = 10 (contrastive MCA fg vs bg)
 cmca = CMCA(n_components=2)
-for alpha in [0, 10]:
+for alpha in [0, 10, 'auto']:
     ### cMCA
-    cmca.fit(fg=fg, bg=bg, alpha=alpha)
+    auto_alpha = False
+    if alpha == 'auto':
+        alpha = None
+        auto_alpha = True
+    cmca.fit(fg=fg, bg=bg, alpha=alpha, auto_alpha_selection=auto_alpha)
 
     # row coordinates (cloud of individuals)
     Y_fg_row = np.array(cmca.transform(fg, axis='row'))
@@ -37,6 +42,7 @@ for alpha in [0, 10]:
     categories = cmca.categories
 
     ### Plot the results
+    alpha = int(cmca.alpha * 100) / 100
     plt.figure(figsize=[8, 8])
     # plot row coordinates
     plt.subplot(2, 2, 1)

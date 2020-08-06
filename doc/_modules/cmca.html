@@ -1,35 +1,150 @@
 
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cmca &mdash; cmca  documentation</title>
+  
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cmca &#8212; cmca  documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> cmca
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cmca.html">cmca module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">cmca</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>cmca</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for cmca</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">itertools</span>
@@ -67,6 +182,9 @@
 <span class="sd">        encoder.</span>
 <span class="sd">    loadings: ndarray, shape(n_categories, n_components)</span>
 <span class="sd">        Contrastive principal component loadings obtained after fit() with cMCA.</span>
+<span class="sd">    alpha: float</span>
+<span class="sd">        The most recently used alpha. This will be manually selected alpha or</span>
+<span class="sd">        the best alpha selected automatically.</span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import pandas as pd</span>
@@ -79,7 +197,8 @@
 <span class="sd">    &gt;&gt;&gt; # https://archive.ics.uci.edu/ml/datasets/Congressional+Voting+Records</span>
 <span class="sd">    &gt;&gt;&gt; df = pd.read_csv(&#39;./data/house-votes-84.data&#39;, header=None)</span>
 <span class="sd">    &gt;&gt;&gt; with open(&#39;./data/house-votes-84.col_names&#39;, &#39;r&#39;) as f:</span>
-<span class="sd">    ...     df.columns = [line.replace(&#39;\n&#39;, &#39;&#39;) for line in f]</span>
+<span class="sd">    ...     # chr(10) is newline (to avoid newline when generating doc with sphinx)</span>
+<span class="sd">    ...     df.columns = [line.replace(chr(10), &#39;&#39;) for line in f]</span>
 <span class="sd">    &gt;&gt;&gt; X = df.iloc[:, 1:]</span>
 <span class="sd">    &gt;&gt;&gt; y = np.array(df.iloc[:, 0])</span>
 
@@ -170,7 +289,30 @@
 
             <span class="k">return</span> <span class="n">oh</span></div></div>
 
-<div class="viewcode-block" id="CMCA.fit"><a class="viewcode-back" href="../cmca.html#cmca.CMCA.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_trace_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">eta</span><span class="p">):</span>
+        <span class="n">tr_fg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_fg</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+
+        <span class="c1"># this is the way to add eta in cNRL by Fujiwara et al., 2020.</span>
+        <span class="c1"># https://arxiv.org/abs/2005.12419</span>
+        <span class="c1"># tr_bg = (self.components.transpose() @ self.B_bg @ self.components +</span>
+        <span class="c1">#          np.identity(self.components.shape[1]) * eta).trace()</span>
+
+        <span class="c1"># here is the new way to add eta to make sure eta is the ratio of tr_fg</span>
+        <span class="n">tr_bg</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_bg</span>
+<div class="viewcode-block" id="CMCA.fit"><a class="viewcode-back" href="../cmca.html#cmca.CMCA.fit">[docs]</a>                 <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span> <span class="o">+</span> <span class="n">tr_fg</span> <span class="o">*</span> <span class="n">eta</span>
+
+        <span class="k">return</span> <span class="n">tr_fg</span> <span class="o">/</span> <span class="n">tr_bg</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">fg</span><span class="p">,</span>
+            <span class="n">bg</span><span class="p">,</span>
+            <span class="n">auto_alpha_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">eta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+            <span class="n">convergence_ratio</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the model with target and background datasets.</span>
 
 <span class="sd">        Parameters</span>
@@ -180,11 +322,28 @@
 <span class="sd">        bg: pandas dataframe, shape (n_samples, n_questions)</span>
 <span class="sd">            A background categorical dataset. The columns of bg must be the same</span>
 <span class="sd">            with fg. (A row size can be different from fg.)</span>
+<span class="sd">        auto_alpha_selection:</span>
+<span class="sd">            If True, find auto_alpha_selection for fit. Otherwise, compute PCs</span>
+<span class="sd">            based on input alpha.</span>
 <span class="sd">        alpha: float</span>
 <span class="sd">            A contrast parameter, which quantifies the trade-off between having</span>
 <span class="sd">            high target variance and low background variance. alpha must be</span>
 <span class="sd">            equal to or larger than 0. If 0, the result will be the same with</span>
-<span class="sd">            the ordinary PCA.</span>
+<span class="sd">            the ordinary PCA. If auto_alpha_selection is True, this alpha is</span>
+<span class="sd">            used as an initial alpha value for auto selection.</span>
+<span class="sd">        eta: float, optional, (default=1e-3)</span>
+<span class="sd">            Small constant value that will add to covariance matrix of bg when</span>
+<span class="sd">            applying automatic alpha selection. eta relates to the maximum</span>
+<span class="sd">            alpha that will be considered as the best alpha. For example,</span>
+<span class="sd">            eta=1e-3 allows that alpha reaches till 1e+3.</span>
+<span class="sd">        convergence_ratio: float, optional, (default=1e-2)</span>
+<span class="sd">            Threshold of improvement ratio for convergence of automatic alpha</span>
+<span class="sd">            selection.</span>
+<span class="sd">        max_iter=10: int, optional, (default=10)</span>
+<span class="sd">            The number of alpha updates at most.</span>
+<span class="sd">        keep_reports: bool, optional, (default=False)</span>
+<span class="sd">            If True, while automatic alpha selection, reports are recorded. The</span>
+<span class="sd">            reports are the history of &quot;alpha&quot; values.</span>
 <span class="sd">        y: dummy paramter</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -217,7 +376,20 @@
         <span class="n">G_bg</span> <span class="o">=</span> <span class="n">CMCA</span><span class="o">.</span><span class="n">OneHotEncoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cate_each_q_</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
 
         <span class="c1"># Apply CA to the disjunctive matrices</span>
+        <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">G_fg</span><span class="p">,</span> <span class="n">G_bg</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">auto_alpha_selection</span><span class="p">:</span>
+            <span class="n">new_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trace_ratio</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span>
+            <span class="c1"># TODO: this can be faster by saving B_fg and B_tg and only update</span>
+            <span class="c1"># alpha value when rerunning fit()</span>
+            <span class="k">while</span> <span class="n">max_iter</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">new_alpha</span> <span class="o">&gt;</span> <span class="n">alpha</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="n">new_alpha</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">+</span> <span class="mf">1e-15</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">convergence_ratio</span><span class="p">:</span>
+                <span class="n">alpha</span> <span class="o">=</span> <span class="n">new_alpha</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">G_fg</span><span class="p">,</span> <span class="n">G_bg</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">new_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trace_ratio</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span>
+                <span class="n">max_iter</span> <span class="o">-=</span> <span class="mi">1</span>
 
         <span class="c1"># Compute the total inertia</span>
         <span class="n">n_new_columns</span> <span class="o">=</span> <span class="n">G_fg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -264,72 +436,50 @@
             <span class="n">X</span><span class="p">)</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;row&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col_coordinates</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div></div>
 </pre></div>
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">cmca</a></h1>
+          <footer>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Author
 
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../cca.html">cca module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cmca.html">cmca module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sample.html">sample module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../setup.html">setup module</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Author.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>

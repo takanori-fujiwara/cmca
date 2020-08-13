@@ -153,13 +153,13 @@
 <span id="cmca-module"></span><h1>cmca module<a class="headerlink" href="#module-cmca" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="cmca.CMCA">
-<em class="property">class </em><code class="sig-prename descclassname">cmca.</code><code class="sig-name descname">CMCA</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">cmca.</code><code class="sig-name descname">CMCA</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_input</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cca.CCA</span></code></p>
 <p>Contrastive Multiple Correspondence Analysis (cMCA) from Fujiwara and Liu,
 2020 (<a class="reference external" href="https://arxiv.org/abs/2007.04540">https://arxiv.org/abs/2007.04540</a>).
 We referred to MCA in Prince library (<a class="reference external" href="https://github.com/MaxHalford/prince">https://github.com/MaxHalford/prince</a>)
 for this implementation. We modified the part related to perform
-contrastive analysis.</p>
+contrastive analysis. Also, we improved the performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -240,7 +240,9 @@ the best alpha selected automatically.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">### cMCA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cmca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">bg</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># if you set alpha value manually, you can use:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># cmca.fit(fg, bg, auto_alpha_selection=False, alpha=5)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># row coordinates (cloud of individuals)</span>
@@ -302,14 +304,60 @@ the best alpha selected automatically.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Categories&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># After the first fit, if you only update the result with a new alpha,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># you can use update_fit()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmca</span><span class="o">.</span><span class="n">update_fit</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py class">
 <dt id="cmca.CMCA.OneHotEncoder">
-<em class="property">class </em><code class="sig-name descname">OneHotEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">categories</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">OneHotEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">categories</span><span class="o">=</span><span class="default_value">'auto'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing._encoders.OneHotEncoder</span></code></p>
-<p>This class is a minor updated version of the customized one-hot encoder
+<p>This class is a updated version of the customized one-hot encoder
 previously included in Prince library (<a class="reference external" href="https://github.com/MaxHalford/prince">https://github.com/MaxHalford/prince</a>).
 Because target and background datasets could have a different set of
-categorical values, we cannot use categories=’auto’.</p>
+categorical values, in that case, we cannot use categories=’auto’.
+:param categories: If ‘auto’, determine categories automatically from the training</p>
+<blockquote>
+<div><p>data. Otherwise, categories[i] holds the categories expected in the
+ith column. The passed categories should not mix strings and
+numeric values within a single feature, and should be sorted in
+case of numeric values.</p>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt id="cmca.CMCA.OneHotEncoder.categories_">
+<code class="sig-name descname">categories_</code><a class="headerlink" href="#cmca.CMCA.OneHotEncoder.categories_" title="Permalink to this definition">¶</a></dt>
+<dd><p>The categories of each feature determined during fitting (in order
+of the features in X and corresponding with the output of
+transform). This includes the category specified in drop (if any).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cmca</span> <span class="kn">import</span> <span class="n">CMCA</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Congressional Voting Records Data Set</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># https://archive.ics.uci.edu/ml/datasets/Congressional+Voting+Records</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/house-votes-84.data&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./data/house-votes-84.col_names&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="c1"># chr(10) is newline (to avoid newline when generating doc with sphinx)</span>
+<span class="gp">... </span>    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X_oh</span> <span class="o">=</span> <span class="n">CMCA</span><span class="o">.</span><span class="n">OneHotEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X_oh</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="cmca.CMCA.OneHotEncoder.fit">
 <code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder.fit" title="Permalink to this definition">¶</a></dt>
@@ -317,9 +365,8 @@ categorical values, we cannot use categories=’auto’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to determine the categories of each feature.</p></li>
-<li><p><strong>y</strong> (<em>None</em>) – Ignored. This parameter exists only for compatibility with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.pipeline.Pipeline</span></code>.</p></li>
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em>(</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -332,18 +379,38 @@ categorical values, we cannot use categories=’auto’.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="cmca.CMCA.OneHotEncoder.fit_transform">
+<code class="sig-name descname">fit_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder.fit_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit OneHotEncoder to X and then transform X.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em>(</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to determine the categories of each feature.</p></li>
+<li><p><strong>y</strong> (<em>None</em>) – Ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>oh</strong> – Transformed input.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas DataFrame consisting of SparseArray values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="cmca.CMCA.OneHotEncoder.transform">
 <code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.OneHotEncoder.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.OneHotEncoder.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform X using one-hot encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em> [</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – The data to encode.</p>
+<dd class="field-odd"><p><strong>X</strong> (<em>array-like</em><em>, </em><em>shape</em><em>(</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The data to determine the categories of each feature.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>X_out</strong> – Transformed input.</p>
+<dd class="field-even"><p><strong>oh</strong> – Transformed input.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>sparse matrix if sparse=True else a 2-d array</p>
+<dd class="field-odd"><p>pandas DataFrame consisting of SparseArray values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -352,7 +419,7 @@ categorical values, we cannot use categories=’auto’.</p>
 
 <dl class="py method">
 <dt id="cmca.CMCA.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fg</span></em>, <em class="sig-param"><span class="n">bg</span></em>, <em class="sig-param"><span class="n">auto_alpha_selection</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">eta</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">convergence_ratio</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">fg</em>, <em class="sig-param">bg</em>, <em class="sig-param">auto_alpha_selection=True</em>, <em class="sig-param">alpha=None</em>, <em class="sig-param">eta=0.001</em>, <em class="sig-param">convergence_ratio=0.01</em>, <em class="sig-param">max_iter=10</em>, <em class="sig-param">onehot_encoded=False</em>, <em class="sig-param">precision=&lt;class 'numpy.float32'&gt;</em>, <em class="sig-param">y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model with target and background datasets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,6 +443,11 @@ selection.</p></li>
 <li><p><strong>max_iter=10</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=10</em><em>)</em>) – The number of alpha updates at most.</p></li>
 <li><p><strong>keep_reports</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=False</em><em>)</em>) – If True, while automatic alpha selection, reports are recorded. The
 reports are the history of “alpha” values.</p></li>
+<li><p><strong>onehot_encoded</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=False</em><em>)</em>) – If True, fit() directly uses fg and bg as one-hot encoded matrices.
+Otherwise, fit() applies one-hot encoding to fg and bg before
+computing Burt matrices.</p></li>
+<li><p><strong>precision</strong> (<em>numpy dtype</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=np.float32</em><em>)</em>) – Computation precision. For example, if fast computation is needed
+rather than high precision, np.float16 can be set.</p></li>
 <li><p><strong>y</strong> (<em>dummy paramter</em>) – </p></li>
 </ul>
 </dd>
@@ -390,7 +462,7 @@ reports are the history of “alpha” values.</p></li>
 
 <dl class="py method">
 <dt id="cmca.CMCA.transform">
-<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'row'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.transform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">'row'</span></em>, <em class="sig-param"><span class="n">onehot_encoded</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute row coordinates (or cloud of individuals) or column
 coordinates (or cloud of categories) with learned components by fit.</p>
 <dl class="field-list simple">
@@ -399,6 +471,9 @@ coordinates (or cloud of categories) with learned components by fit.</p>
 <li><p><strong>X</strong> (<em>pandas dataframe</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_questions</em><em>)</em>) – A categorical dataset.</p></li>
 <li><p><strong>axis</strong> (<em>'row'</em><em> or </em><em>'col'</em><em>, </em><em>optional</em><em>, </em><em>default='row'</em>) – If ‘row’, compute row coordniates. Otherwise, compute column
 coordinates.</p></li>
+<li><p><strong>onehot_encoded</strong> (<em>boolean</em><em>, </em><em>optional</em><em>, </em><em>(</em><em>default=False</em><em>)</em>) – If True, transform() directly uses X as one-hot encoded matrix.
+Otherwise, transform() applies one-hot encoding to X before
+obtaining row or column coordinates.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -407,6 +482,29 @@ Otherwise, column coordinates of X, shape(n_categories, n_components).</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray, shape(n_samples or n_categories, n_components)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cmca.CMCA.update_fit">
+<code class="sig-name descname">update_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alpha</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cmca.html#CMCA.update_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cmca.CMCA.update_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update fit with a new alpha value. Unlike fit, this does not compute
+Burt matrices of fg and bg but utilize the Burt matrices already
+produced by applying fit once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>alpha</strong> (<em>float</em>) – A contrast parameter, which quantifies the trade-off between having
+high target variance and low background variance. alpha must be
+equal to or larger than 0. If 0, the result will be the same with
+the ordinary PCA. If auto_alpha_selection is True, this alpha is
+used as an initial alpha value for auto selection.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>self.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -434,7 +532,7 @@ Otherwise, column coordinates of X, shape(n_categories, n_components).</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Author
+        &copy; Copyright 2020, Takanori Fujiwara
 
     </p>
   </div>

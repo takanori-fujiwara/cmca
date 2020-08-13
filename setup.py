@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='cmca',
-      version=0.03,
+      version=0.04,
       packages=[''],
       package_dir={'': '.'},
       install_requires=['numpy', 'scipy', 'pandas', 'sklearn'],

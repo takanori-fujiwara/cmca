@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy import sparse
+from scipy import linalg
 from sklearn import utils
 
 
@@ -10,7 +11,7 @@ class CCA():
     in Prince library (https://github.com/MaxHalford/prince) for this
     implementation. We modified the part related to perform contrastive analysis.
     '''
-    def __init__(self, n_components=2, copy=True, check_input=True):
+    def __init__(self, n_components=2, copy=True, check_input=False):
         self.n_components = n_components
         self.copy = copy
         self.check_input = check_input
@@ -34,17 +35,17 @@ class CCA():
 
         return row_names, col_names
 
-    def fit(self, fg, bg, alpha, y=None):
+    def fit(self, fg, bg, alpha, precision=np.float32, y=None):
         # Check input
         if self.check_input:
             utils.check_array(fg, accept_sparse=True)
             utils.check_array(bg, accept_sparse=True)
 
-        # Check all values are positive
-        if (fg < 0).any().any():
-            raise ValueError("All values in fg should be positive")
-        if (bg < 0).any().any():
-            raise ValueError("All values in bg should be positive")
+            # Check all values are positive
+            if (fg < 0).any().any():
+                raise ValueError("All values in fg should be positive")
+            if (bg < 0).any().any():
+                raise ValueError("All values in bg should be positive")
 
         self.alpha = alpha
         fg_r_names, fg_c_names = self._row_col_names(fg)
@@ -57,27 +58,34 @@ class CCA():
         if self.copy:
             fg = np.copy(fg)
             bg = np.copy(bg)
+        else:
+            if isinstance(fg, pd.DataFrame):
+                fg = fg.to_numpy()
+            if isinstance(bg, pd.DataFrame):
+                bg = bg.to_numpy()
+        fg = fg.astype(precision)
+        bg = bg.astype(precision)
 
-        if isinstance(fg, pd.DataFrame):
-            fg = fg.to_numpy()
-        if isinstance(bg, pd.DataFrame):
-            bg = bg.to_numpy()
+        # without changing to csr matrix, Burt matrix comp is bit faster
+        # fg = sparse.csr_matrix(fg)
+        # bg = sparse.csr_matrix(bg)
 
-        # Compute correspondence/probability matrices containing relative freq
-        fg = fg / np.sum(fg)
-        bg = bg / np.sum(bg)
+        # Compute the correspondence matrix which contains the relative frequencies
+        fg = fg / (np.sum(fg) + np.finfo(precision).tiny)
+        bg = bg / (np.sum(bg) + np.finfo(precision).tiny)
 
         # Compute standardized Burt Matrices
-        fg_r_masses = pd.Series(fg.sum(axis=1), index=fg_r_names).to_numpy()
-        fg_c_masses = pd.Series(fg.sum(axis=0),
-                                index=self.categories).to_numpy()
-        bg_r_masses = pd.Series(bg.sum(axis=1), index=bg_r_names).to_numpy()
-        bg_c_masses = pd.Series(bg.sum(axis=0),
-                                index=self.categories).to_numpy()
+        fg_r_masses = fg.sum(axis=1)
+        fg_c_masses = fg.sum(axis=0)
+        bg_r_masses = bg.sum(axis=1)
+        bg_c_masses = bg.sum(axis=0)
+        fg_c_masses = np.asarray(fg_c_masses).reshape(fg.shape[1], )
+        bg_c_masses = np.asarray(bg_c_masses).reshape(bg.shape[1], )
+
         for i in range(len(fg_c_masses)):
-            fg_c_masses[i] = max(np.finfo(float).tiny, fg_c_masses[i])
+            fg_c_masses[i] = max(np.finfo(precision).tiny, fg_c_masses[i])
         for i in range(len(bg_c_masses)):
-            bg_c_masses[i] = max(np.finfo(float).tiny, bg_c_masses[i])
+            bg_c_masses[i] = max(np.finfo(precision).tiny, bg_c_masses[i])
 
         fg -= np.outer(fg_r_masses, fg_c_masses)
         bg -= np.outer(bg_r_masses, bg_c_masses)
@@ -93,7 +101,27 @@ class CCA():
         self.B = self.B_fg - alpha * self.B_bg
 
         # Perform EVD
-        self.w_, self.v_ = np.linalg.eig(self.B)
+        self.w_, self.v_ = linalg.eig(self.B)
+        top_eigen_indices = np.argsort(-self.w_)
+        self.w_ = self.w_[top_eigen_indices]
+
+        self.components = self.v_[:, top_eigen_indices[:self.n_components]]
+        self.loadings = self.components * np.sqrt(np.abs(self.w_))[:,
+                                                                   np.newaxis]
+
+        return self
+
+    def update_fit(self, alpha):
+        '''
+        Fit by updating only the part related to alpha value.
+        '''
+        self.alpha = alpha
+
+        # Burt matrix for constrastive analyss
+        self.B = self.B_fg - alpha * self.B_bg
+
+        # Perform EVD
+        self.w_, self.v_ = linalg.eig(self.B)
         top_eigen_indices = np.argsort(-self.w_)
         self.w_ = self.w_[top_eigen_indices]
 

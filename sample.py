@@ -18,6 +18,7 @@ bg = X.iloc[y == 'republican']
 
 # alpha = 0 (normal MCA on fg)
 # alpha = 10 (contrastive MCA fg vs bg)
+# alpha = 'auto' (contrastive MCA with auto selection of alpha)
 cmca = CMCA(n_components=2)
 for alpha in [0, 10, 'auto']:
     ### cMCA
@@ -25,7 +26,7 @@ for alpha in [0, 10, 'auto']:
     if alpha == 'auto':
         alpha = None
         auto_alpha = True
-    cmca.fit(fg=fg, bg=bg, alpha=alpha, auto_alpha_selection=auto_alpha)
+    cmca.fit(fg, bg, alpha=alpha, auto_alpha_selection=auto_alpha)
 
     # row coordinates (cloud of individuals)
     Y_fg_row = np.array(cmca.transform(fg, axis='row'))
@@ -76,3 +77,42 @@ for alpha in [0, 10, 'auto']:
 
     plt.tight_layout()
     plt.show()
+
+# After the first fit, if you only update the result with a new alpha,
+# you can use update_fit()
+cmca.update_fit(alpha=10000)
+
+# Usage Example of preprocessed data with one-hot encoding
+# This way can save computational cost if you select different sets of fg and bg
+# from the same dataset to produce multiple cMCA results
+X_oh = CMCA.OneHotEncoder().fit_transform(X)
+
+fg_oh = X_oh.iloc[y == 'democrat']
+bg_oh = X_oh.iloc[y == 'republican']
+
+cmca.fit(fg_oh, bg_oh, onehot_encoded=True)
+Y_fg_row = np.array(cmca.transform(fg_oh, axis='row', onehot_encoded=True))
+Y_bg_row = np.array(cmca.transform(bg_oh, axis='row', onehot_encoded=True))
+alpha = int(cmca.alpha * 100) / 100
+
+plt.figure(figsize=[8, 8])
+plt.scatter(Y_fg_row[:, 0], Y_fg_row[:, 1], c='b', s=5, label='demo')
+plt.scatter(Y_bg_row[:, 0], Y_bg_row[:, 1], c='r', s=5, label='rep')
+plt.legend(loc='best', shadow=False, scatterpoints=1, fontsize=10)
+plt.title(f'cMCA row coords. alpha = {alpha}')
+plt.show()
+
+fg_oh = X_oh.iloc[y == 'republican']
+bg_oh = X_oh.iloc[y == 'democrat']
+
+cmca.fit(fg_oh, bg_oh, onehot_encoded=True)
+Y_fg_row = np.array(cmca.transform(fg_oh, axis='row', onehot_encoded=True))
+Y_bg_row = np.array(cmca.transform(bg_oh, axis='row', onehot_encoded=True))
+alpha = int(cmca.alpha * 100) / 100
+
+plt.figure(figsize=[8, 8])
+plt.scatter(Y_fg_row[:, 0], Y_fg_row[:, 1], c='r', s=5, label='rep')
+plt.scatter(Y_bg_row[:, 0], Y_bg_row[:, 1], c='b', s=5, label='demo')
+plt.legend(loc='best', shadow=False, scatterpoints=1, fontsize=10)
+plt.title(f'cMCA row coords. alpha = {alpha}')
+plt.show()

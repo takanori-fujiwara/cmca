@@ -100,8 +100,11 @@ class CCA():
         # Burt matrix for constrastive analyss
         self.B = self.B_fg - alpha * self.B_bg
 
-        # Perform EVD
-        self.w_, self.v_ = linalg.eig(self.B)
+        # Perform EVD (in our case, we can use Schur decomp)
+        # self.w_, self.v_ = linalg.eig(self.B)
+        schur_form, self.v_ = linalg.schur(self.B)
+        self.w_ = linalg.eigvals(schur_form)
+
         top_eigen_indices = np.argsort(-self.w_)
         self.w_ = self.w_[top_eigen_indices]
 

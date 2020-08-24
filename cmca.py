@@ -220,19 +220,18 @@ class CMCA(cca.CCA):
             return oh
 
     def _trace_ratio(self, eta):
-        tr_fg = (
-            self.components.transpose() @ self.B_fg @ self.components).trace()
+        tr_fg = (self.components.T @ self.R_fg @ self.components).trace()
 
         # this is the way to add eta in cNRL by Fujiwara et al., 2020.
         # https://arxiv.org/abs/2005.12419
-        # tr_bg = (self.components.transpose() @ self.B_bg @ self.components +
+        # tr_bg = (self.components.T @ self.B_bg @ self.components +
         #          np.identity(self.components.shape[1]) * eta).trace()
 
         # here is the new way to add eta to make sure eta is the ratio of tr_fg
-        tr_bg = (self.components.transpose() @ self.B_bg
+        tr_bg = (self.components.T @ self.R_bg
                  @ self.components).trace() + tr_fg * eta
 
-        return tr_fg / tr_bg
+        return np.asscalar(tr_fg) / np.asscalar(tr_bg)
 
     def fit(self,
             fg,
@@ -293,7 +292,18 @@ class CMCA(cca.CCA):
         if onehot_encoded:
             G_fg = fg
             G_bg = bg
-            self.categories_ = G_fg.columns
+
+            # generate input categories used for one-hot encoder from colnames
+            self.categories_ = []
+            prefix = None
+            for col_name in G_fg.columns:
+                if prefix != col_name.split('_')[-2]:
+                    self.categories_.append([])
+                    prefix = col_name.split('_')[-2]
+                postfix = col_name.split('_')[-1]
+                self.categories_[-1].append(postfix)
+            for i, cate in enumerate(self.categories_):
+                self.categories_[i] = np.array(cate, dtype='object')
         else:
             if self.check_input:
                 utils.check_array(fg, dtype=[str, np.number])

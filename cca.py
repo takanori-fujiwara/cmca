@@ -52,6 +52,18 @@ class CCA():
 
         return R
 
+    def _perform_evd_and_update(self):
+        # self.w_, self.v_ = linalg.eig(self.B)
+        schur_form, self.v_ = linalg.schur(self.R)
+        self.w_ = linalg.eigvals(schur_form)
+
+        top_eigen_indices = np.argsort(-self.w_)
+        self.w_ = self.w_[top_eigen_indices]
+
+        self.components = self.v_[:, top_eigen_indices[:self.n_components]]
+        self.loadings = self.components * np.sqrt(np.abs(self.w_))[:,
+                                                                   np.newaxis]
+
     def fit(self, fg, bg, alpha, precision=np.float32, y=None):
         # Check input
         if self.check_input:
@@ -95,16 +107,7 @@ class CCA():
         self.R = self.R_fg - alpha * self.R_bg
 
         # Perform EVD (in our case, we can use Schur decomp)
-        # self.w_, self.v_ = linalg.eig(self.B)
-        schur_form, self.v_ = linalg.schur(self.R)
-        self.w_ = linalg.eigvals(schur_form)
-
-        top_eigen_indices = np.argsort(-self.w_)
-        self.w_ = self.w_[top_eigen_indices]
-
-        self.components = self.v_[:, top_eigen_indices[:self.n_components]]
-        self.loadings = self.components * np.sqrt(np.abs(self.w_))[:,
-                                                                   np.newaxis]
+        self._perform_evd_and_update()
 
         return self
 
@@ -118,13 +121,7 @@ class CCA():
         self.R = self.R_fg - alpha * self.R_bg
 
         # Perform EVD
-        self.w_, self.v_ = linalg.eig(self.R)
-        top_eigen_indices = np.argsort(-self.w_)
-        self.w_ = self.w_[top_eigen_indices]
-
-        self.components = self.v_[:, top_eigen_indices[:self.n_components]]
-        self.loadings = self.components * np.sqrt(np.abs(self.w_))[:,
-                                                                   np.newaxis]
+        self._perform_evd_and_update()
 
         return self
 

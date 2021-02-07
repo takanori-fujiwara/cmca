@@ -20,7 +20,7 @@ class CCA():
         self.loadings = None
         self.alpha = None
         self.R_fg = None
-        self.R_tg = None
+        self.R_bg = None
         self.R = None
         self.w_ = None
         self.v_ = None

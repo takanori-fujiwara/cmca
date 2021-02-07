@@ -57,6 +57,7 @@ class CMCA(cca.CCA):
     >>> bg = X.iloc[y == 'republican']
 
     >>> ### cMCA
+    >>> cmca = CMCA()
     >>> cmca.fit(fg, bg)
     >>> # if you set alpha value manually, you can use:
     >>> # cmca.fit(fg, bg, auto_alpha_selection=False, alpha=5)

@@ -176,7 +176,6 @@ class CCA():
         return pd.DataFrame(data=X @ self.components, index=row_names)
 
     def col_coordinates(self, X):
-        """The col principal coordinates. Compute row_coordinates first. Then, applying transiton formula"""
         utils.validation.check_is_fitted(self)
 
         row_names, col_names = self._row_col_names(X)
@@ -194,19 +193,21 @@ class CCA():
         c_masses_a = pd.Series(np.squeeze(np.asarray(X.sum(axis=0))),
                                index=col_names).to_numpy(dtype=float)
         c_masses_a[c_masses_a <= np.finfo(float).tiny] = np.finfo(float).tiny
-        X = X / np.sum(X)
-        c_masses_b = pd.Series(np.squeeze(np.asarray(X.sum(axis=0))),
-                               index=col_names).to_numpy(dtype=float)
-        c_masses_b[c_masses_b <= np.finfo(float).tiny] = np.finfo(float).tiny
+        # X = X / np.sum(X)
+        # c_masses_b = pd.Series(np.squeeze(np.asarray(X.sum(axis=0))),
+        #                        index=col_names).to_numpy(dtype=float)
+        # c_masses_b[c_masses_b <= np.finfo(float).tiny] = np.finfo(float).tiny
+        #
+        # # Normalize the rows so that they sum up to 1
+        # if isinstance(X, np.ndarray):
+        #     X = X / X.sum(axis=1)[:, None]
+        # else:
+        #     X = X / X.sum(axis=1)
 
-        # Normalize the rows so that they sum up to 1
-        if isinstance(X, np.ndarray):
-            X = X / X.sum(axis=1)[:, None]
-        else:
-            X = X / X.sum(axis=1)
+        # Y_row = X @ sparse.diags(c_masses_b**-0.5) @ self.components
+        # Y_col = sparse.diags(c_masses_a**-1) @ X.T @ Y_row @ sparse.diags(
+        #     1 / np.sqrt(np.abs(self.w_[:self.n_components])))
 
-        Y_row = X @ sparse.diags(c_masses_b**-0.5) @ self.components
-        Y_col = sparse.diags(c_masses_a**-1) @ X.T @ Y_row @ sparse.diags(
-            1 / np.sqrt(np.abs(self.w_[:self.n_components])))
+        Y_col = sparse.diags(c_masses_a**-0.5) @ self.components
 
         return pd.DataFrame(Y_col, index=col_names)

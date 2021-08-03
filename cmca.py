@@ -220,17 +220,17 @@ class CMCA(cca.CCA):
 
             return oh
 
-    def _trace_ratio(self, eta):
+    def _trace_ratio(self, eps):
         tr_fg = (self.components.T @ self.R_fg @ self.components).trace()
 
-        # this is the way to add eta in cNRL by Fujiwara et al., 2020.
+        # this is the way to add eps in cNRL by Fujiwara et al., 2020.
         # https://arxiv.org/abs/2005.12419
         # tr_bg = (self.components.T @ self.B_bg @ self.components +
-        #          np.identity(self.components.shape[1]) * eta).trace()
+        #          np.identity(self.components.shape[1]) * eps).trace()
 
-        # here is the new way to add eta to make sure eta is the ratio of tr_fg
+        # here is the new way to add eps to make sure eps is the ratio of tr_fg
         tr_bg = (self.components.T @ self.R_bg
-                 @ self.components).trace() + tr_fg * eta
+                 @ self.components).trace() + tr_fg * eps
 
         return np.asscalar(tr_fg) / np.asscalar(tr_bg)
 
@@ -239,7 +239,7 @@ class CMCA(cca.CCA):
             bg,
             auto_alpha_selection=True,
             alpha=None,
-            eta=1e-3,
+            eps=1e-3,
             convergence_ratio=1e-2,
             max_iter=10,
             onehot_encoded=False,
@@ -263,11 +263,11 @@ class CMCA(cca.CCA):
             equal to or larger than 0. If 0, the result will be the same with
             the ordinary PCA. If auto_alpha_selection is True, this alpha is
             used as an initial alpha value for auto selection.
-        eta: float, optional, (default=1e-3)
+        eps: float, optional, (default=1e-3)
             Small constant value that will add to covariance matrix of bg when
-            applying automatic alpha selection. eta relates to the maximum
+            applying automatic alpha selection. eps relates to the maximum
             alpha that will be considered as the best alpha. For example,
-            eta=1e-3 allows that alpha reaches till 1e+3.
+            eps=1e-3 allows that alpha reaches till 1e+3.
         convergence_ratio: float, optional, (default=1e-2)
             Threshold of improvement ratio for convergence of automatic alpha
             selection.
@@ -341,12 +341,12 @@ class CMCA(cca.CCA):
         super().fit(G_fg, G_bg, alpha=alpha, precision=precision, y=y)
 
         if auto_alpha_selection:
-            new_alpha = self._trace_ratio(eta)
+            new_alpha = self._trace_ratio(eps)
             while max_iter > 0 and new_alpha > alpha and (
                     new_alpha - alpha) / (alpha + 1e-15) > convergence_ratio:
                 alpha = new_alpha
                 self.update_fit(alpha)
-                new_alpha = self._trace_ratio(eta)
+                new_alpha = self._trace_ratio(eps)
                 max_iter -= 1
 
         return self

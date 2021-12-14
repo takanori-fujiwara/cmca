@@ -61,8 +61,9 @@ class CCA():
         self.w_ = self.w_[top_eigen_indices]
 
         self.components = self.v_[:, top_eigen_indices[:self.n_components]]
-        self.loadings = self.components * np.sqrt(np.abs(self.w_))[:,
-                                                                   np.newaxis]
+        top_w = self.w_[top_eigen_indices[:self.n_components]]
+
+        self.loadings = self.components @ np.diag(np.sqrt(np.abs(top_w)))
 
     def fit(self, fg, bg, alpha, precision=np.float32, y=None):
         # Check input

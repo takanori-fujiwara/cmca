@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from sklearn import preprocessing
 from sklearn import utils
+from scipy.stats import rankdata
+import matplotlib.pyplot as plt
 
 import cca
 
@@ -420,3 +422,216 @@ class CMCA(cca.CCA):
             X, onehot_encoded=onehot_encoded
         ) if axis == 'row' else self._col_coordinates(
             X, onehot_encoded=onehot_encoded)
+
+    #### Analysis Helper Methods
+    def get_questions_info(self, rank_loadings_by='variance'):
+        '''
+        Obtaining supplemental information for each question as a dict object.
+
+        Parameters
+        -----
+        rank_loadings_by: 'variance', 'abs_max', or 'range' (optional, default='variance')
+            This decides a criterion used to rank categories.
+            'variance': variance of each question's loadings.
+            'abs_max': maximum of absolute values of each questions's loadings.
+            'range': value range of each questions's loadings.
+        Returns
+        -----
+        q_info: dictionary
+            Containing information of 'indices', 'values', 'loadings', 'ranks' for
+            each question.
+            'indices': index of each question's value in cmca_inst.categories.
+            'values': value of each category beloging to the question.
+            'loadings': loading of each category beloging to the question.
+            'ranks': rank of each category beloging to the question.
+        '''
+        qs = [cate.split('_')[-2] for cate in self.categories]
+        vals = [cate.split('_')[-1] for cate in self.categories]
+
+        # store information as dict
+        q_info = {}
+        for i, (q, v, load) in enumerate(zip(qs, vals, self.loadings)):
+            if not q in q_info:
+                q_info[q] = {'indices': [i], 'values': [v], 'loadings': [load]}
+            else:
+                q_info[q]['indices'].append(i)
+                q_info[q]['values'].append(v)
+                q_info[q]['loadings'].append(load)
+
+        # convert list to numpy array
+        for q in q_info:
+            for key in q_info[q]:
+                q_info[q][key] = np.array(q_info[q][key])
+
+        # get scores to rank questions
+        if rank_loadings_by == 'variance':
+            scores = [q_info[q]['loadings'].var(axis=0) for q in q_info]
+        elif rank_loadings_by == 'abs_max':
+            scores = [
+                np.abs(q_info[q]['loadings']).max(axis=0) for q in q_info
+            ]
+        elif rank_loadings_by == 'range':
+            scores = [
+                q_info[q]['loadings'].max(axis=0) -
+                q_info[q]['loadings'].min(axis=0) for q in q_info
+            ]
+        else:
+            print(f'{rank_loadings_by} is not supported. "variance" is used')
+            scores = [q_info[q]['loadings'].var(axis=0) for q in q_info]
+        scores = np.array(scores)
+
+        ranks = rankdata(-scores, axis=0, method='ordinal') - 1
+        for i, q in enumerate(q_info):
+            q_info[q]['ranks'] = ranks[i]
+
+        return q_info
+
+    def _darken_color(self, color, amount=1.8):
+        '''
+        Darkening the input color.
+
+        Parameters
+        -----
+        color: color
+            A single color format string or a single numeric RGB sequence.
+        amount: float (optional, default=1.8)
+            Amount of increase of darkness
+        Returns
+        -----
+        darkened_color: color
+        '''
+        import matplotlib.colors as mc
+        import colorsys
+        try:
+            c = mc.cnames[color]
+        except:
+            c = color
+        c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+
+        return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+
+    def plot_quesitions(self,
+                        plot_type='loading',
+                        plot_pc_indices=[0, 1],
+                        X=None,
+                        k_loadings_to_color=10,
+                        rank_loadings_by={
+                            'criterion': 'variance',
+                            'pc_idx': 0
+                        },
+                        shown_text_length=1,
+                        top_k_colors=[
+                            '#78B7B2', '#507AA6', '#F08E39', '#DF585C',
+                            '#5BA053', '#AF7BA1', '#ECC854', '#9A7460',
+                            '#FD9EA9', '#888888'
+                        ],
+                        default_color='#BAB0AC'):
+        '''
+        Generate 2D plot of questions' loadings, column coordinates, or components
+
+        Parameters
+        -----
+        plot_type: 'loading', 'colcoor', or 'component'
+            If 'loading', generate 2D plot of loadings.
+            If 'colcoord', generate 2D plot of column coordinates.
+            If 'component', generate 2D plot of components.
+        plot_pc_indices: array-like, shape(2, ), (optional, default=[0, 1])
+            Indices of principal components used for x- and y-axes
+        X:  array-like, shape(n_samples, n_features)
+            When plot_type is 'colcoord', this X will be used to get column coordinates.
+        k_loadings_to_color: int (optional, default=10)
+            # of top loadings to be colored.
+        rank_loadings_by: dict with keys of 'criterion' and 'pc_idx' (optional, default={'criterion': 'variance', 'pc_idx': 0})
+            Based on this dict, top-k questions will be selcted and colored.
+            For example, when 'criterion' is 'variance' and 'pc_idx' is 0,
+            top-k questions that have the highest variance of loadings along the
+            first PC will be selected.
+            'criterion': 'variance', 'abs_max', or 'range'.
+            'pc_idx': 0, 1, ..., or n_components.
+        shown_text_length: int (optional, default=1)
+            First (shown_text_length)-characters of each question's value will be
+            shown in the plot.
+        top_k_colors: array-like of colors
+            These colors will be used to color top-k questions.
+        default_color: color
+            The color assigned to non-top-k questions.
+        Returns
+        -----
+        fig: Figure
+            The matplotlib Figure instance.
+        '''
+        if plot_type == 'colcoord':
+            Y_col = np.array(self.transform(X, axis='col'))
+
+        criterion = rank_loadings_by['criterion']
+        pc_idx = rank_loadings_by['pc_idx']
+        q_info = self.get_questions_info(rank_loadings_by=criterion)
+
+        questions = np.array(list(q_info.keys()))
+        ranks = np.array([q_info[q]['ranks'] for q in questions])
+
+        fig = plt.figure(figsize=(12, 6))
+        plt.subplot(1, 2, 1)
+        for q, rank in zip(questions, ranks[:, pc_idx]):
+            indices = q_info[q]['indices']
+            values = q_info[q]['values']
+
+            if plot_type == 'loading':
+                x = self.loadings[indices, plot_pc_indices[0]]
+                y = self.loadings[indices, plot_pc_indices[1]]
+            elif plot_type == 'colcoord':
+                x = Y_col[indices, plot_pc_indices[0]]
+                y = Y_col[indices, plot_pc_indices[1]]
+            else:
+                x = self.components[indices, plot_pc_indices[0]]
+                y = self.components[indices, plot_pc_indices[1]]
+
+            # remove close to infinite positions
+            thres_inf = 1e+100
+            indices_to_keep = (np.abs(x) < thres_inf) + (np.abs(y) < thres_inf)
+            x = x[indices_to_keep]
+            y = y[indices_to_keep]
+            values = values[indices_to_keep]
+
+            if rank < k_loadings_to_color:
+                color = top_k_colors[rank]
+                zorder = k_loadings_to_color + 1 - rank
+            else:
+                color = default_color
+                zorder = 1
+            label = f'{q} (rank: {rank+1})'
+
+            plt.scatter(x,
+                        y,
+                        s=30,
+                        c=color,
+                        label=label,
+                        alpha=1,
+                        linewidths=0,
+                        zorder=zorder)
+            for i, val in enumerate(values):
+                plt.annotate(val[0:shown_text_length], (x[i], y[i]),
+                             fontsize=10,
+                             c=self._darken_color(color),
+                             zorder=zorder + 1)
+
+        plt.title(f'{plot_type} (rank by {criterion} along PC{pc_idx+1})')
+        plt.xlabel('cPC1')
+        plt.ylabel('cPC2')
+        plt.rc('axes', axisbelow=True)
+        plt.grid(color='#cccccc', alpha=0.5, linewidth=0.05, linestyle='-')
+        plt.style.use('default')
+
+        handles, labels = plt.gca().get_legend_handles_labels()
+        plt.legend(handles,
+                   labels,
+                   bbox_to_anchor=(1.1, 1.0),
+                   ncol=1,
+                   shadow=False,
+                   fontsize=10,
+                   facecolor='white',
+                   edgecolor='#444444',
+                   framealpha=0.5).get_frame().set_linewidth(0.3)
+        plt.locator_params(nbins=10)
+
+        return fig

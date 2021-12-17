@@ -78,6 +78,32 @@ for alpha in [0, 10, 'auto']:
     plt.tight_layout()
     plt.show()
 
+### Examples using analysis helper methods
+# accessing supplementary info
+print('Supplementary information of each question')
+supp_info = cmca.get_questions_info()
+questions = list(supp_info.keys())
+print(supp_info[questions[0]])
+
+# plot column coordinates and loadings with colors
+fig = cmca.plot_quesitions(
+    plot_type='colcoord',  # colcoord, loading, or component
+    X=fg,
+    rank_loadings_by={
+        'criterion': 'variance',
+        'pc_idx': 0
+    })
+plt.show()
+
+fig = cmca.plot_quesitions(
+    plot_type='loading',  # colcoord, loading, or component
+    X=fg,
+    rank_loadings_by={
+        'criterion': 'variance',
+        'pc_idx': 0
+    })
+plt.show()
+
 # After the first fit, if you only update the result with a new alpha,
 # you can use update_fit()
 cmca.update_fit(alpha=10000)

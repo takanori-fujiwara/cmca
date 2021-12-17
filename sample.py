@@ -97,7 +97,6 @@ plt.show()
 
 fig = cmca.plot_quesitions(
     plot_type='loading',  # colcoord, loading, or component
-    X=fg,
     rank_loadings_by={
         'criterion': 'variance',
         'pc_idx': 0

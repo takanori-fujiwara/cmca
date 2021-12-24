@@ -89,18 +89,23 @@ print(supp_info[questions[0]])
 fig = cmca.plot_quesitions(
     plot_type='colcoord',  # colcoord, loading, or component
     X=fg,
+    k_loadings_to_color=3,
     rank_loadings_by={
         'criterion': 'variance',
         'pc_idx': 0
-    })
+    },
+    display_mode='hide_non_top_k_text')
 plt.show()
 
 fig = cmca.plot_quesitions(
     plot_type='loading',  # colcoord, loading, or component
+    k_loadings_to_color=3,
+    # colored_questions=['handicapped-infants', 'water-project-cost-sharing'],
     rank_loadings_by={
         'criterion': 'variance',
         'pc_idx': 0
-    })
+    },
+    display_mode='hide_non_top_k_text')
 plt.show()
 
 # After the first fit, if you only update the result with a new alpha,

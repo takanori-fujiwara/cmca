@@ -1,3 +1,4 @@
+import math
 import itertools
 import numpy as np
 import pandas as pd
@@ -514,18 +515,21 @@ class CMCA(cca.CCA):
                         plot_type='loading',
                         plot_pc_indices=[0, 1],
                         X=None,
+                        colored_questions=None,
                         k_loadings_to_color=10,
                         rank_loadings_by={
                             'criterion': 'variance',
                             'pc_idx': 0
                         },
-                        shown_text_length=1,
                         top_k_colors=[
                             '#78B7B2', '#507AA6', '#F08E39', '#DF585C',
                             '#5BA053', '#AF7BA1', '#ECC854', '#9A7460',
                             '#FD9EA9', '#888888'
                         ],
-                        default_color='#BAB0AC'):
+                        default_color='#BAB0AC',
+                        shown_text_length=1,
+                        display_mode='default',
+                        show_legend=True):
         '''
         Generate 2D plot of questions' loadings, column coordinates, or components
 
@@ -539,6 +543,9 @@ class CMCA(cca.CCA):
             Indices of principal components used for x- and y-axes
         X:  array-like, shape(n_samples, n_features)
             When plot_type is 'colcoord', this X will be used to get column coordinates.
+        colored_questions: list of strings (optional, default=None)
+            If None, colored questions are selected by top-k loadings.
+            If specified, specified questions are colored using top_k_colors.
         k_loadings_to_color: int (optional, default=10)
             # of top loadings to be colored.
         rank_loadings_by: dict with keys of 'criterion' and 'pc_idx' (optional, default={'criterion': 'variance', 'pc_idx': 0})
@@ -548,13 +555,20 @@ class CMCA(cca.CCA):
             first PC will be selected.
             'criterion': 'variance', 'abs_max', or 'range'.
             'pc_idx': 0, 1, ..., or n_components.
-        shown_text_length: int (optional, default=1)
-            First (shown_text_length)-characters of each question's value will be
-            shown in the plot.
         top_k_colors: array-like of colors
             These colors will be used to color top-k questions.
         default_color: color
             The color assigned to non-top-k questions.
+        shown_text_length: int (optional, default=1)
+            First (shown_text_length)-characters of each question's value will be
+            shown in the plot.
+        display_mode: string (optional, default='default')
+            Select from 'default', 'hide_non_top_k_text', 'hide_non_top_k'.
+            'default': show all text labels and points (including non-top-k)
+            'hide_non_top_k_text': hide text labels for non-top-k
+            'hide_non_top_k': hide non-top-k questions
+        show_legend: bool (optional, default=True)
+            If True, showing the legend.
         Returns
         -----
         fig: Figure
@@ -570,8 +584,13 @@ class CMCA(cca.CCA):
         questions = np.array(list(q_info.keys()))
         ranks = np.array([q_info[q]['ranks'] for q in questions])
 
-        fig = plt.figure(figsize=(12, 6))
-        plt.subplot(1, 2, 1)
+        if show_legend:
+            fig = plt.figure(figsize=(12, 6))
+            plt.subplot(1, 2, 1)
+        else:
+            fig = plt.figure(figsize=(6, 6))
+            plt.subplot(1, 1, 1)
+
         for q, rank in zip(questions, ranks[:, pc_idx]):
             indices = q_info[q]['indices']
             values = q_info[q]['values']
@@ -593,12 +612,28 @@ class CMCA(cca.CCA):
             y = y[indices_to_keep]
             values = values[indices_to_keep]
 
-            if rank < k_loadings_to_color:
-                color = top_k_colors[rank]
-                zorder = k_loadings_to_color + 1 - rank
+            color = default_color
+            zorder = 1
+            point_alpha = 0 if display_mode in ['hide_non_top_k'] else 1
+            text_alpha = 0 if display_mode in [
+                'hide_non_top_k_text', 'hide_non_top_k'
+            ] else 1
+
+            if colored_questions is None:
+                if rank < k_loadings_to_color:
+                    color = top_k_colors[rank]
+                    zorder = k_loadings_to_color + 1 - rank
+                    point_alpha = 1
+                    text_alpha = 1
             else:
-                color = default_color
-                zorder = 1
+                colored_questions = list(colored_questions)
+                if q in colored_questions:
+                    q_idx = colored_questions.index(q)
+                    color = top_k_colors[q_idx]
+                    zorder = k_loadings_to_color + 1 - q_idx
+                    point_alpha = 1
+                    text_alpha = 1
+
             label = f'{q} (rank: {rank+1})'
 
             plt.scatter(x,
@@ -606,13 +641,14 @@ class CMCA(cca.CCA):
                         s=30,
                         c=color,
                         label=label,
-                        alpha=1,
+                        alpha=point_alpha,
                         linewidths=0,
                         zorder=zorder)
             for i, val in enumerate(values):
                 plt.annotate(val[0:shown_text_length], (x[i], y[i]),
                              fontsize=10,
                              c=self._darken_color(color),
+                             alpha=text_alpha,
                              zorder=zorder + 1)
 
         plt.title(f'{plot_type} (rank by {criterion} along PC{pc_idx+1})')
@@ -622,16 +658,17 @@ class CMCA(cca.CCA):
         plt.grid(color='#cccccc', alpha=0.5, linewidth=0.05, linestyle='-')
         plt.style.use('default')
 
-        handles, labels = plt.gca().get_legend_handles_labels()
-        plt.legend(handles,
-                   labels,
-                   bbox_to_anchor=(1.1, 1.0),
-                   ncol=1,
-                   shadow=False,
-                   fontsize=10,
-                   facecolor='white',
-                   edgecolor='#444444',
-                   framealpha=0.5).get_frame().set_linewidth(0.3)
-        plt.locator_params(nbins=10)
+        if show_legend:
+            handles, labels = plt.gca().get_legend_handles_labels()
+            plt.legend(handles,
+                       labels,
+                       bbox_to_anchor=(1.1, 1.0),
+                       ncol=math.ceil(len(labels) / 20),
+                       shadow=False,
+                       fontsize=10,
+                       facecolor='white',
+                       edgecolor='#444444',
+                       framealpha=0.5).get_frame().set_linewidth(0.3)
+            plt.locator_params(nbins=10)
 
         return fig

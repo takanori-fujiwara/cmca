@@ -661,7 +661,9 @@ class CMCA(cca.CCA):
 
         plot_type_title = 'column coordinates' if plot_type == 'colcoord' else f'{plot_type}s'
         plt.title(
-            f'{plot_type_title} (rank by the {criterion} along cPC{pc_idx+1})')
+            f'{plot_type_title} (rank by the {criterion} of loadings along cPC{pc_idx+1})',
+            fontsize=10,
+        )
         plt.xlabel('cPC1')
         plt.ylabel('cPC2')
         plt.rc('axes', axisbelow=True)

@@ -119,6 +119,7 @@ class CMCA(cca.CCA):
     >>> # you can use update_fit()
     >>> cmca.update_fit(alpha=1000)
     '''
+
     class OneHotEncoder(preprocessing.OneHotEncoder):
         '''
         This class is a updated version of the customized one-hot encoder
@@ -155,6 +156,7 @@ class CMCA(cca.CCA):
 
         >>> print(X_oh)
         '''
+
         def __init__(self, categories='auto'):
             super().__init__(sparse=True,
                              dtype=np.uint8,
@@ -529,13 +531,14 @@ class CMCA(cca.CCA):
                         default_color='#BAB0AC',
                         shown_text_length=1,
                         display_mode='default',
-                        show_legend=True):
+                        show_legend=True,
+                        return_ranks=False):
         '''
         Generate 2D plot of questions' loadings, column coordinates, or components
 
         Parameters
         -----
-        plot_type: 'loading', 'colcoor', or 'component'
+        plot_type: 'loading', 'colcoord', or 'component'
             If 'loading', generate 2D plot of loadings.
             If 'colcoord', generate 2D plot of column coordinates.
             If 'component', generate 2D plot of components.
@@ -574,6 +577,11 @@ class CMCA(cca.CCA):
         fig: Figure
             The matplotlib Figure instance.
         '''
+        if plot_type not in ['loading', 'colcoord', 'component']:
+            print('plot_type should loading, colcoord, or component.',
+                  f'The current input is {plot_type}.',
+                  'loading is used as an alternative.')
+
         if plot_type == 'colcoord':
             Y_col = np.array(self.transform(X, axis='col'))
 
@@ -651,7 +659,9 @@ class CMCA(cca.CCA):
                              alpha=text_alpha,
                              zorder=zorder + 1)
 
-        plt.title(f'{plot_type} (rank by {criterion} along PC{pc_idx+1})')
+        plot_type_title = 'column coordinates' if plot_type == 'colcoord' else f'{plot_type}s'
+        plt.title(
+            f'{plot_type_title} (rank by the {criterion} along cPC{pc_idx+1})')
         plt.xlabel('cPC1')
         plt.ylabel('cPC2')
         plt.rc('axes', axisbelow=True)
@@ -670,5 +680,8 @@ class CMCA(cca.CCA):
                        edgecolor='#444444',
                        framealpha=0.5).get_frame().set_linewidth(0.3)
             plt.locator_params(nbins=10)
+
+        if return_ranks:
+            return fig, ranks
 
         return fig

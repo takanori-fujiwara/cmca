@@ -11,7 +11,7 @@ About
 Requirements
 -----
 * Python3
-* Note: Tested on macOS Catalina and Ubuntu 20.0.4 LTS.
+* Note: Tested on macOS BigSur, Ubuntu 20.0.4 LTS, and Windows 10.
 ******
 
 Setup

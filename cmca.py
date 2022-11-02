@@ -237,7 +237,7 @@ class CMCA(cca.CCA):
         tr_bg = (self.components.T @ self.R_bg
                  @ self.components).trace() + tr_fg * eps
 
-        return np.asscalar(tr_fg) / np.asscalar(tr_bg)
+        return tr_fg / tr_bg
 
     def fit(self,
             fg,
@@ -489,7 +489,7 @@ class CMCA(cca.CCA):
 
         return q_info
 
-    def _darken_color(self, color, amount=1.8):
+    def _darken_color(self, color, amount=1.3):
         '''
         Darkening the input color.
 
@@ -596,9 +596,10 @@ class CMCA(cca.CCA):
             fig = plt.figure(figsize=(12, 6))
             plt.subplot(1, 2, 1)
         else:
-            fig = plt.figure(figsize=(6, 6))
+            fig = plt.figure(figsize=(8, 8))
             plt.subplot(1, 1, 1)
 
+        texts = []
         for q, rank in zip(questions, ranks[:, pc_idx]):
             indices = q_info[q]['indices']
             values = q_info[q]['values']
@@ -638,7 +639,8 @@ class CMCA(cca.CCA):
                 if q in colored_questions:
                     q_idx = colored_questions.index(q)
                     color = top_k_colors[q_idx]
-                    zorder = k_loadings_to_color + 1 - q_idx
+                    # zorder = k_loadings_to_color + 1 - q_idx
+                    zorder = 40
                     point_alpha = 1
                     text_alpha = 1
 
@@ -646,26 +648,40 @@ class CMCA(cca.CCA):
 
             plt.scatter(x,
                         y,
-                        s=30,
+                        s=60,
                         c=color,
                         label=label,
                         alpha=point_alpha,
                         linewidths=0,
                         zorder=zorder)
+
             for i, val in enumerate(values):
-                plt.annotate(val[0:shown_text_length], (x[i], y[i]),
-                             fontsize=10,
-                             c=self._darken_color(color),
-                             alpha=text_alpha,
-                             zorder=zorder + 1)
+                if text_alpha > 0:
+                    text = plt.text(x[i],
+                                    y[i],
+                                    val[0:shown_text_length],
+                                    fontsize=15,
+                                    c=self._darken_color(color),
+                                    alpha=text_alpha,
+                                    zorder=50)
+                    texts.append(text)
+
+        from adjustText import adjust_text
+        ax = plt.gca()
+        adjust_text(texts,
+                    arrowprops=dict(arrowstyle='-', color='#666666', lw=0.5))
 
         plot_type_title = 'column coordinates' if plot_type == 'colcoord' else f'{plot_type}s'
         plt.title(
             f'{plot_type_title} (rank by the {criterion} of loadings along cPC{pc_idx+1})',
-            fontsize=10,
-        )
-        plt.xlabel('cPC1')
-        plt.ylabel('cPC2')
+            fontsize=10)
+
+        if self.alpha == 0:
+            plt.xlabel('PC1')
+            plt.ylabel('PC2')
+        else:
+            plt.xlabel('cPC1')
+            plt.ylabel('cPC2')
         plt.rc('axes', axisbelow=True)
         plt.grid(color='#cccccc', alpha=0.5, linewidth=0.05, linestyle='-')
         plt.style.use('default')

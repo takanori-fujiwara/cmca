@@ -2,9 +2,11 @@
 
 About
 -----
-* cMCA is from: Fujiwara and Liu, "Contrastive Multiple Correspondence Analysis (cMCA): Applying the Contrastive Learning Method to Identify Political Subgroups", arXiv:2007.04540, 2020.
+* cMCA is from: Fujiwara and Liu, "Contrastive multiple correspondence analysis (cMCA): using contrastive learning to identify latent subgroups in political parties." PLOS ONE, forthcoming. [arXiv](https://arxiv.org/abs/2007.04540)
   * cMCA finds principal components along which a target categorical dataset has more variance when compared to a background categorical dataset.
-  * This implementation also integrates automatic selection of a contrast parameter (a hyperparameter of cMCA), which is originally developed for contrastive principal component analysis (cPCA) in: Fujiwara et al., "Interpretable Contrastive Learning for Networks", arXiv:2005.12419, 2020.
+  * This implementation also integrates automatic selection of a contrast parameter (a hyperparameter of cMCA), which is originally developed for contrastive principal component analysis (cPCA) in: Fujiwara et al., "Network Comparison with Interpretable Contrastive Network Representation Learning", Journal of Data Science, Statistics, and Visualisation, 2022. [arXiv](https://arxiv.org/abs/2005.12419)
+  * Other use cases (using machine maintenance data) can be found in: Zhan et al., "A Visual Analytics Approach for the Diagnosis of Heterogeneous and Multidimensional Machine Maintenance Data." Proc. PacificVis, 2021. 
+  
 
 ******
 
@@ -31,4 +33,4 @@ Usage
 
 ## How to Cite
 Please, cite:    
-* cMCA is from: Fujiwara and Liu, "Contrastive Multiple Correspondence Analysis (cMCA): Applying the Contrastive Learning Method to Identify Political Subgroups", arXiv:2007.04540, 2020.
+* Fujiwara and Liu, "Contrastive multiple correspondence analysis (cMCA): using contrastive learning to identify latent subgroups in political parties." PLOS ONE, forthcoming.

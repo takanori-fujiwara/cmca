@@ -158,7 +158,7 @@ class CMCA(cca.CCA):
         '''
 
         def __init__(self, categories='auto'):
-            super().__init__(sparse=True,
+            super().__init__(sparse_output=True,
                              dtype=np.uint8,
                              categories=categories)
             self.column_names_ = None

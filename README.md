@@ -13,7 +13,7 @@ About
 Requirements
 -----
 * Python3
-* Note: Tested on macOS Ventura, Ubuntu 22.0.4 LTS, and Windows 10.
+* Note: Tested on macOS Sonoma, Ubuntu 22.0.4 LTS, and Windows 10.
 ******
 
 Setup

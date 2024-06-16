@@ -11,7 +11,7 @@ import cca
 
 
 class CMCA(cca.CCA):
-    '''
+    """
     Contrastive Multiple Correspondence Analysis (cMCA) from Fujiwara and Liu,
     2020 (https://arxiv.org/abs/2007.04540).
     We referred to MCA in Prince library (https://github.com/MaxHalford/prince)
@@ -118,10 +118,10 @@ class CMCA(cca.CCA):
     >>> # After the first fit, if you only update the result with a new alpha,
     >>> # you can use update_fit()
     >>> cmca.update_fit(alpha=1000)
-    '''
+    """
 
     class OneHotEncoder(preprocessing.OneHotEncoder):
-        '''
+        """
         This class is a updated version of the customized one-hot encoder
         previously included in Prince library (https://github.com/MaxHalford/prince).
         Because target and background datasets could have a different set of
@@ -155,16 +155,14 @@ class CMCA(cca.CCA):
         >>> X_oh = CMCA.OneHotEncoder().fit_transform(X)
 
         >>> print(X_oh)
-        '''
+        """
 
-        def __init__(self, categories='auto'):
-            super().__init__(sparse_output=True,
-                             dtype=np.uint8,
-                             categories=categories)
+        def __init__(self, categories="auto"):
+            super().__init__(sparse_output=True, dtype=np.uint8, categories=categories)
             self.column_names_ = None
 
         def fit_transform(self, X, y=None):
-            '''
+            """
             Fit OneHotEncoder to X and then transform X.
 
             Parameters
@@ -177,11 +175,11 @@ class CMCA(cca.CCA):
             ----------
             oh: pandas DataFrame consisting of SparseArray values.
                 Transformed input.
-            '''
+            """
             return self.fit(X, y=y).transform(X)
 
         def fit(self, X, y=None):
-            '''
+            """
             Fit OneHotEncoder to X.
 
             Parameters
@@ -193,18 +191,21 @@ class CMCA(cca.CCA):
             Returns
             ----------
             self
-            '''
+            """
             self = super().fit(X)
             self.column_names_ = list(
                 itertools.chain(
-                    *
-                    [['{}_{}'.format(col, cat) for cat in self.categories_[i]]
-                     for i, col in enumerate(X.columns)]))
+                    *[
+                        ["{}_{}".format(col, cat) for cat in self.categories_[i]]
+                        for i, col in enumerate(X.columns)
+                    ]
+                )
+            )
 
             return self
 
         def transform(self, X):
-            '''
+            """
             Transform X using one-hot encoding.
 
             Parameters
@@ -215,7 +216,7 @@ class CMCA(cca.CCA):
             ----------
             oh: pandas DataFrame consisting of SparseArray values.
                 Transformed input.
-            '''
+            """
             # TODO: This part seems slow. Avoid using pandas dataframe by
             # spearating column names as a different variable
             oh = pd.DataFrame.sparse.from_spmatrix(super().transform(X))
@@ -234,22 +235,23 @@ class CMCA(cca.CCA):
         #          np.identity(self.components.shape[1]) * eps).trace()
 
         # here is the new way to add eps to make sure eps is the ratio of tr_fg
-        tr_bg = (self.components.T @ self.R_bg
-                 @ self.components).trace() + tr_fg * eps
+        tr_bg = (self.components.T @ self.R_bg @ self.components).trace() + tr_fg * eps
 
         return tr_fg / tr_bg
 
-    def fit(self,
-            fg,
-            bg,
-            auto_alpha_selection=True,
-            alpha=None,
-            eps=1e-3,
-            convergence_ratio=1e-2,
-            max_iter=10,
-            onehot_encoded=False,
-            precision=np.float32,
-            y=None):
+    def fit(
+        self,
+        fg,
+        bg,
+        auto_alpha_selection=True,
+        alpha=None,
+        eps=1e-3,
+        convergence_ratio=1e-2,
+        max_iter=10,
+        onehot_encoded=False,
+        precision=np.float32,
+        y=None,
+    ):
         """Fit the model with target and background datasets.
 
         Parameters
@@ -303,13 +305,13 @@ class CMCA(cca.CCA):
             self.categories_ = []
             prefix = None
             for col_name in G_fg.columns:
-                if prefix != col_name.split('_')[-2]:
+                if prefix != col_name.split("_")[-2]:
                     self.categories_.append([])
-                    prefix = col_name.split('_')[-2]
-                postfix = col_name.split('_')[-1]
+                    prefix = col_name.split("_")[-2]
+                postfix = col_name.split("_")[-1]
                 self.categories_[-1].append(postfix)
             for i, cate in enumerate(self.categories_):
-                self.categories_[i] = np.array(cate, dtype='object')
+                self.categories_[i] = np.array(cate, dtype="object")
         else:
             if self.check_input:
                 utils.check_array(fg, dtype=[str, np.number])
@@ -330,8 +332,8 @@ class CMCA(cca.CCA):
             # get categories for each question
             self.cate_each_q_ = [
                 np.unique(
-                    np.concatenate(
-                        (fg[col_name].unique(), bg[col_name].unique())))
+                    np.concatenate((fg[col_name].unique(), bg[col_name].unique()))
+                )
                 for col_name in fg.columns
             ]
 
@@ -347,8 +349,11 @@ class CMCA(cca.CCA):
 
         if auto_alpha_selection:
             new_alpha = self._trace_ratio(eps)
-            while max_iter > 0 and new_alpha > alpha and (
-                    new_alpha - alpha) / (alpha + 1e-15) > convergence_ratio:
+            while (
+                max_iter > 0
+                and new_alpha > alpha
+                and (new_alpha - alpha) / (alpha + 1e-15) > convergence_ratio
+            ):
                 alpha = new_alpha
                 self.update_fit(alpha)
                 new_alpha = self._trace_ratio(eps)
@@ -357,7 +362,7 @@ class CMCA(cca.CCA):
         return self
 
     def update_fit(self, alpha):
-        '''Update fit with a new alpha value. Unlike fit, this does not compute
+        """Update fit with a new alpha value. Unlike fit, this does not compute
         Burt matrices of fg and bg but utilize the Burt matrices already
         produced by applying fit once.
 
@@ -372,7 +377,7 @@ class CMCA(cca.CCA):
         Returns
         -------
         self.
-        '''
+        """
         return super().update_fit(alpha)
 
     def _row_coordinates(self, X, onehot_encoded=False):
@@ -397,7 +402,7 @@ class CMCA(cca.CCA):
 
         return super().col_coordinates(G)
 
-    def transform(self, X, axis='row', onehot_encoded=False):
+    def transform(self, X, axis="row", onehot_encoded=False):
         """Compute row coordinates (or cloud of individuals) or column
         coordinates (or cloud of categories) with learned components by fit.
 
@@ -421,14 +426,15 @@ class CMCA(cca.CCA):
         utils.validation.check_is_fitted(self)
         if self.check_input:
             utils.check_array(X, dtype=[str, np.number])
-        return self._row_coordinates(
-            X, onehot_encoded=onehot_encoded
-        ) if axis == 'row' else self._col_coordinates(
-            X, onehot_encoded=onehot_encoded)
+        return (
+            self._row_coordinates(X, onehot_encoded=onehot_encoded)
+            if axis == "row"
+            else self._col_coordinates(X, onehot_encoded=onehot_encoded)
+        )
 
     #### Analysis Helper Methods
-    def get_questions_info(self, rank_loadings_by='variance'):
-        '''
+    def get_questions_info(self, rank_loadings_by="variance"):
+        """
         Obtaining supplemental information for each question as a dict object.
 
         Parameters
@@ -447,19 +453,19 @@ class CMCA(cca.CCA):
             'values': value of each category beloging to the question.
             'loadings': loading of each category beloging to the question.
             'ranks': rank of each category beloging to the question.
-        '''
-        qs = [cate.split('_')[-2] for cate in self.categories]
-        vals = [cate.split('_')[-1] for cate in self.categories]
+        """
+        qs = [cate.split("_")[-2] for cate in self.categories]
+        vals = [cate.split("_")[-1] for cate in self.categories]
 
         # store information as dict
         q_info = {}
         for i, (q, v, load) in enumerate(zip(qs, vals, self.loadings)):
             if not q in q_info:
-                q_info[q] = {'indices': [i], 'values': [v], 'loadings': [load]}
+                q_info[q] = {"indices": [i], "values": [v], "loadings": [load]}
             else:
-                q_info[q]['indices'].append(i)
-                q_info[q]['values'].append(v)
-                q_info[q]['loadings'].append(load)
+                q_info[q]["indices"].append(i)
+                q_info[q]["values"].append(v)
+                q_info[q]["loadings"].append(load)
 
         # convert list to numpy array
         for q in q_info:
@@ -467,30 +473,28 @@ class CMCA(cca.CCA):
                 q_info[q][key] = np.array(q_info[q][key])
 
         # get scores to rank questions
-        if rank_loadings_by == 'variance':
-            scores = [q_info[q]['loadings'].var(axis=0) for q in q_info]
-        elif rank_loadings_by == 'abs_max':
+        if rank_loadings_by == "variance":
+            scores = [q_info[q]["loadings"].var(axis=0) for q in q_info]
+        elif rank_loadings_by == "abs_max":
+            scores = [np.abs(q_info[q]["loadings"]).max(axis=0) for q in q_info]
+        elif rank_loadings_by == "range":
             scores = [
-                np.abs(q_info[q]['loadings']).max(axis=0) for q in q_info
-            ]
-        elif rank_loadings_by == 'range':
-            scores = [
-                q_info[q]['loadings'].max(axis=0) -
-                q_info[q]['loadings'].min(axis=0) for q in q_info
+                q_info[q]["loadings"].max(axis=0) - q_info[q]["loadings"].min(axis=0)
+                for q in q_info
             ]
         else:
             print(f'{rank_loadings_by} is not supported. "variance" is used')
-            scores = [q_info[q]['loadings'].var(axis=0) for q in q_info]
+            scores = [q_info[q]["loadings"].var(axis=0) for q in q_info]
         scores = np.array(scores)
 
-        ranks = rankdata(-scores, axis=0, method='ordinal') - 1
+        ranks = rankdata(-scores, axis=0, method="ordinal") - 1
         for i, q in enumerate(q_info):
-            q_info[q]['ranks'] = ranks[i]
+            q_info[q]["ranks"] = ranks[i]
 
         return q_info
 
     def _darken_color(self, color, amount=1.3):
-        '''
+        """
         Darkening the input color.
 
         Parameters
@@ -502,9 +506,10 @@ class CMCA(cca.CCA):
         Returns
         -----
         darkened_color: color
-        '''
+        """
         import matplotlib.colors as mc
         import colorsys
+
         try:
             c = mc.cnames[color]
         except:
@@ -513,27 +518,33 @@ class CMCA(cca.CCA):
 
         return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
 
-    def plot_quesitions(self,
-                        plot_type='loading',
-                        plot_pc_indices=[0, 1],
-                        X=None,
-                        colored_questions=None,
-                        k_loadings_to_color=10,
-                        rank_loadings_by={
-                            'criterion': 'variance',
-                            'pc_idx': 0
-                        },
-                        top_k_colors=[
-                            '#78B7B2', '#507AA6', '#F08E39', '#DF585C',
-                            '#5BA053', '#AF7BA1', '#ECC854', '#9A7460',
-                            '#FD9EA9', '#888888'
-                        ],
-                        default_color='#BAB0AC',
-                        shown_text_length=1,
-                        display_mode='default',
-                        show_legend=True,
-                        return_ranks=False):
-        '''
+    def plot_quesitions(
+        self,
+        plot_type="loading",
+        plot_pc_indices=[0, 1],
+        X=None,
+        colored_questions=None,
+        k_loadings_to_color=10,
+        rank_loadings_by={"criterion": "variance", "pc_idx": 0},
+        top_k_colors=[
+            "#78B7B2",
+            "#507AA6",
+            "#F08E39",
+            "#DF585C",
+            "#5BA053",
+            "#AF7BA1",
+            "#ECC854",
+            "#9A7460",
+            "#FD9EA9",
+            "#888888",
+        ],
+        default_color="#BAB0AC",
+        shown_text_length=1,
+        display_mode="default",
+        show_legend=True,
+        return_ranks=False,
+    ):
+        """
         Generate 2D plot of questions' loadings, column coordinates, or components
 
         Parameters
@@ -576,21 +587,23 @@ class CMCA(cca.CCA):
         -----
         fig: Figure
             The matplotlib Figure instance.
-        '''
-        if plot_type not in ['loading', 'colcoord', 'component']:
-            print('plot_type should loading, colcoord, or component.',
-                  f'The current input is {plot_type}.',
-                  'loading is used as an alternative.')
+        """
+        if plot_type not in ["loading", "colcoord", "component"]:
+            print(
+                "plot_type should loading, colcoord, or component.",
+                f"The current input is {plot_type}.",
+                "loading is used as an alternative.",
+            )
 
-        if plot_type == 'colcoord':
-            Y_col = np.array(self.transform(X, axis='col'))
+        if plot_type == "colcoord":
+            Y_col = np.array(self.transform(X, axis="col"))
 
-        criterion = rank_loadings_by['criterion']
-        pc_idx = rank_loadings_by['pc_idx']
+        criterion = rank_loadings_by["criterion"]
+        pc_idx = rank_loadings_by["pc_idx"]
         q_info = self.get_questions_info(rank_loadings_by=criterion)
 
         questions = np.array(list(q_info.keys()))
-        ranks = np.array([q_info[q]['ranks'] for q in questions])
+        ranks = np.array([q_info[q]["ranks"] for q in questions])
 
         if show_legend:
             fig = plt.figure(figsize=(12, 6))
@@ -601,13 +614,13 @@ class CMCA(cca.CCA):
 
         texts = []
         for q, rank in zip(questions, ranks[:, pc_idx]):
-            indices = q_info[q]['indices']
-            values = q_info[q]['values']
+            indices = q_info[q]["indices"]
+            values = q_info[q]["values"]
 
-            if plot_type == 'loading':
+            if plot_type == "loading":
                 x = self.loadings[indices, plot_pc_indices[0]]
                 y = self.loadings[indices, plot_pc_indices[1]]
-            elif plot_type == 'colcoord':
+            elif plot_type == "colcoord":
                 x = Y_col[indices, plot_pc_indices[0]]
                 y = Y_col[indices, plot_pc_indices[1]]
             else:
@@ -615,7 +628,7 @@ class CMCA(cca.CCA):
                 y = self.components[indices, plot_pc_indices[1]]
 
             # remove close to infinite positions
-            thres_inf = 1e+100
+            thres_inf = 1e100
             indices_to_keep = (np.abs(x) < thres_inf) + (np.abs(y) < thres_inf)
             x = x[indices_to_keep]
             y = y[indices_to_keep]
@@ -623,10 +636,10 @@ class CMCA(cca.CCA):
 
             color = default_color
             zorder = 1
-            point_alpha = 0 if display_mode in ['hide_non_top_k'] else 1
-            text_alpha = 0 if display_mode in [
-                'hide_non_top_k_text', 'hide_non_top_k'
-            ] else 1
+            point_alpha = 0 if display_mode in ["hide_non_top_k"] else 1
+            text_alpha = (
+                0 if display_mode in ["hide_non_top_k_text", "hide_non_top_k"] else 1
+            )
 
             if colored_questions is None:
                 if rank < k_loadings_to_color:
@@ -644,59 +657,68 @@ class CMCA(cca.CCA):
                     point_alpha = 1
                     text_alpha = 1
 
-            label = f'{q} (rank: {rank+1})'
+            label = f"{q} (rank: {rank+1})"
 
-            plt.scatter(x,
-                        y,
-                        s=60,
-                        c=color,
-                        label=label,
-                        alpha=point_alpha,
-                        linewidths=0,
-                        zorder=zorder)
+            plt.scatter(
+                x,
+                y,
+                s=60,
+                c=color,
+                label=label,
+                alpha=point_alpha,
+                linewidths=0,
+                zorder=zorder,
+            )
 
             for i, val in enumerate(values):
                 if text_alpha > 0:
-                    text = plt.text(x[i],
-                                    y[i],
-                                    val[0:shown_text_length],
-                                    fontsize=15,
-                                    c=self._darken_color(color),
-                                    alpha=text_alpha,
-                                    zorder=50)
+                    text = plt.text(
+                        x[i],
+                        y[i],
+                        val[0:shown_text_length],
+                        fontsize=15,
+                        c=self._darken_color(color),
+                        alpha=text_alpha,
+                        zorder=50,
+                    )
                     texts.append(text)
 
         from adjustText import adjust_text
-        ax = plt.gca()
-        adjust_text(texts,
-                    arrowprops=dict(arrowstyle='-', color='#666666', lw=0.5))
 
-        plot_type_title = 'column coordinates' if plot_type == 'colcoord' else f'{plot_type}s'
+        ax = plt.gca()
+        adjust_text(texts, arrowprops=dict(arrowstyle="-", color="#666666", lw=0.5))
+
+        plot_type_title = (
+            "column coordinates" if plot_type == "colcoord" else f"{plot_type}s"
+        )
         plt.title(
-            f'{plot_type_title} (rank by the {criterion} of loadings along cPC{pc_idx+1})',
-            fontsize=10)
+            f"{plot_type_title} (rank by the {criterion} of loadings along cPC{pc_idx+1})",
+            fontsize=10,
+        )
 
         if self.alpha == 0:
-            plt.xlabel('PC1')
-            plt.ylabel('PC2')
+            plt.xlabel("PC1")
+            plt.ylabel("PC2")
         else:
-            plt.xlabel('cPC1')
-            plt.ylabel('cPC2')
-        plt.rc('axes', axisbelow=True)
-        plt.grid(color='#cccccc', alpha=0.5, linewidth=0.05, linestyle='-')
-        plt.style.use('default')
+            plt.xlabel("cPC1")
+            plt.ylabel("cPC2")
+        plt.rc("axes", axisbelow=True)
+        plt.grid(color="#cccccc", alpha=0.5, linewidth=0.05, linestyle="-")
+        plt.style.use("default")
 
         if show_legend:
             handles, labels = plt.gca().get_legend_handles_labels()
-            plt.legend(handles,
-                       labels,
-                       bbox_to_anchor=(1.1, 1.0),
-                       ncol=math.ceil(len(labels) / 20),
-                       shadow=False,
-                       fontsize=10,
-                       facecolor='white',
-                       edgecolor='#444444',
-                       framealpha=0.5).get_frame().set_linewidth(0.3)
+            plt.legend(
+                handles,
+                labels,
+                bbox_to_anchor=(1.1, 1.0),
+                ncol=math.ceil(len(labels) / 20),
+                shadow=False,
+                fontsize=10,
+                facecolor="white",
+                edgecolor="#444444",
+                framealpha=0.5,
+            ).get_frame().set_linewidth(0.3)
             plt.locator_params(nbins=10)
 
         if return_ranks:

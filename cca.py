@@ -5,12 +5,13 @@ from scipy import linalg
 from sklearn import utils
 
 
-class CCA():
-    '''
+class CCA:
+    """
     Contrastive Correspondence Analysis (cCA). We referred to CA
     in Prince library (https://github.com/MaxHalford/prince) for this
     implementation. We modified the part related to perform contrastive analysis.
-    '''
+    """
+
     def __init__(self, n_components=2, copy=True, check_input=False):
         self.n_components = n_components
         self.copy = copy
@@ -42,7 +43,9 @@ class CCA():
         # Compute standardized Burt Matrices
         r = X.sum(axis=1)
         c = X.sum(axis=0)
-        c = np.asarray(c).reshape(X.shape[1], )
+        c = np.asarray(c).reshape(
+            X.shape[1],
+        )
         for i in range(len(c)):
             c[i] = max(np.finfo(precision).tiny, c[i])
 
@@ -60,8 +63,8 @@ class CCA():
         top_eigen_indices = np.argsort(-self.w_)
         self.w_ = self.w_[top_eigen_indices]
 
-        self.components = self.v_[:, top_eigen_indices[:self.n_components]]
-        top_w = self.w_[top_eigen_indices[:self.n_components]]
+        self.components = self.v_[:, top_eigen_indices[: self.n_components]]
+        top_w = self.w_[top_eigen_indices[: self.n_components]]
 
         self.loadings = self.components @ np.diag(np.sqrt(np.abs(top_w)))
 
@@ -82,7 +85,7 @@ class CCA():
         bg_r_names, bg_c_names = self._row_col_names(bg)
 
         if not fg_c_names == bg_c_names:
-            raise ValueError('fg\'s and bg\'s col names must match')
+            raise ValueError("fg's and bg's col names must match")
         self.categories = fg_c_names
 
         if self.copy:
@@ -113,9 +116,9 @@ class CCA():
         return self
 
     def update_fit(self, alpha):
-        '''
+        """
         Fit by updating only the part related to alpha value.
-        '''
+        """
         self.alpha = alpha
 
         # Burt matrix for constrastive analyss
@@ -191,8 +194,9 @@ class CCA():
             X = X.copy()
 
         # Compute column masses
-        c_masses_a = pd.Series(np.squeeze(np.asarray(X.sum(axis=0))),
-                               index=col_names).to_numpy(dtype=float)
+        c_masses_a = pd.Series(
+            np.squeeze(np.asarray(X.sum(axis=0))), index=col_names
+        ).to_numpy(dtype=float)
         c_masses_a[c_masses_a <= np.finfo(float).tiny] = np.finfo(float).tiny
         # X = X / np.sum(X)
         # c_masses_b = pd.Series(np.squeeze(np.asarray(X.sum(axis=0))),

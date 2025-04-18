@@ -598,6 +598,9 @@ class CMCA(cca.CCA):
         if plot_type == "colcoord":
             Y_col = np.array(self.transform(X, axis="col"))
 
+        if self.loadings.shape[1] == 1:
+            plot_pc_indices = [0]
+
         criterion = rank_loadings_by["criterion"]
         pc_idx = rank_loadings_by["pc_idx"]
         q_info = self.get_questions_info(rank_loadings_by=criterion)
@@ -619,13 +622,25 @@ class CMCA(cca.CCA):
 
             if plot_type == "loading":
                 x = self.loadings[indices, plot_pc_indices[0]]
-                y = self.loadings[indices, plot_pc_indices[1]]
+                y = (
+                    self.loadings[indices, plot_pc_indices[1]]
+                    if len(plot_pc_indices) > 1
+                    else np.zeros_like(x)
+                )
             elif plot_type == "colcoord":
                 x = Y_col[indices, plot_pc_indices[0]]
-                y = Y_col[indices, plot_pc_indices[1]]
+                y = (
+                    Y_col[indices, plot_pc_indices[1]]
+                    if len(plot_pc_indices) > 1
+                    else np.zeros_like(x)
+                )
             else:
                 x = self.components[indices, plot_pc_indices[0]]
-                y = self.components[indices, plot_pc_indices[1]]
+                y = (
+                    self.components[indices, plot_pc_indices[1]]
+                    if len(plot_pc_indices) > 1
+                    else np.zeros_like(x)
+                )
 
             # remove close to infinite positions
             thres_inf = 1e100
@@ -686,7 +701,8 @@ class CMCA(cca.CCA):
         from adjustText import adjust_text
 
         ax = plt.gca()
-        adjust_text(texts, arrowprops=dict(arrowstyle="-", color="#666666", lw=0.5))
+        if len(plot_pc_indices) > 1:
+            adjust_text(texts, arrowprops=dict(arrowstyle="-", color="#666666", lw=0.5))
 
         plot_type_title = (
             "column coordinates" if plot_type == "colcoord" else f"{plot_type}s"

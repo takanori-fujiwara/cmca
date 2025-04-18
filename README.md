@@ -18,7 +18,7 @@ Requirements
 -----
 * Python3
 * R users can still utilize cMCA library by using reticulate package. Examples can be found in sample.R
-* Note: Tested on macOS Sonoma, Ubuntu 22.0.4 LTS, and Windows 10.
+* Note: Tested on macOS Sequoia, Ubuntu 22.0.4 LTS, and Windows 10.
 ******
 
 Setup
